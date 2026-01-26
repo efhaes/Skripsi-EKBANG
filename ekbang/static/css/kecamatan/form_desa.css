@@ -1,0 +1,100 @@
+/* ================================
+   FORM CONTAINER (GLASS)
+================================ */
+.form-glass {
+    max-width: 560px;
+    margin: 40px auto;
+    padding: 28px 30px;
+    border-radius: 18px;
+
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.08),
+        0 20px 40px rgba(0,0,0,0.45);
+
+    color: #e5e7eb;
+}
+
+/* ================================
+   TITLE
+================================ */
+.form-glass h3 {
+    margin-bottom: 22px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    color: #f8fafc;
+}
+
+/* ================================
+   DJANGO FORM FIELD
+================================ */
+.form-glass p {
+    margin-bottom: 18px;
+}
+
+.form-glass label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+    color: #cbd5f5;
+}
+
+/* input, select, textarea */
+.form-glass input,
+.form-glass select,
+.form-glass textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 12px;
+
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #f9fafb;
+
+    transition: all 0.25s ease;
+}
+
+.form-glass input::placeholder {
+    color: rgba(255,255,255,0.45);
+}
+
+.form-glass input:focus,
+.form-glass select:focus,
+.form-glass textarea:focus {
+    outline: none;
+    border-color: rgba(114,136,232,0.8);
+    box-shadow: 0 0 0 2px rgba(114,136,232,0.25);
+    background: rgba(255,255,255,0.12);
+}
+
+/* ================================
+   BUTTON
+================================ */
+.form-glass .btn {
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-size: 0.9rem;
+    transition: all 0.25s ease;
+}
+
+.form-glass .btn-success {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    border: none;
+}
+
+.form-glass .btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(124,58,237,0.4);
+}
+
+.form-glass .btn-secondary {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.18);
+}
+
+.form-glass .btn-secondary:hover {
+    background: rgba(255,255,255,0.18);
+}

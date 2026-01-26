@@ -1,0 +1,129 @@
+{% extends 'base/base_kec.html' %}
+{% load static %}
+{% block title %}Daftar Desa{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/kecamatan/desa_list.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section (Tebal/Menonjol) -->
+<div class="hero-section">
+    <div class="hero-orb"></div>
+    <div class="hero-orb-two"></div>
+    
+    <div class="hero-content">
+        <h1 class="hero-title">
+            <span class="hero-title-gradient">Kelola Data Desa</span>
+        </h1>
+        <p class="hero-subtitle">
+            Kelola informasi desa di wilayah kecamatan Anda secara lengkap dan terstruktur. 
+            Tambah, edit, dan pantau data desa dengan antarmuka yang modern dan intuitif.
+        </p>
+        
+        <!-- Stats Section -->
+        
+    </div>
+</div>
+
+<div class="content-wrapper">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h3>Daftar Desa Terdaftar</h3>
+        <a href="{% url 'kecamatan_desa_tambah' %}" class="btn-glass-primary">
+            Tambah Desa Baru
+        </a>
+    </div>
+
+    <!-- Table Container -->
+    <div class="table-glass">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nama Desa</th>
+                    <th>Kecamatan</th>
+                    <th>Username Akun</th>
+                    <th>Tanggal Dibuat</th>
+                    <th> Aksi</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in desa %}
+                <tr>
+                    <td>
+                        <strong>{{ d.nama_desa }}</strong>
+                    </td>
+                    <td>
+                        <span class="badge-kecamatan">{{ d.kecamatan }}</span>
+                    </td>
+                    <td>{{ d.user.username }}</td>
+                    <td>{{ d.created_at|date:"d-m-Y" }}</td>
+                    <td class="aksi-cell">
+                    <a href="{% url 'kecamatan_desa_edit' d.id %}" 
+                        class="btn-modern btn-edit-modern">
+                            Edit
+                        </a>
+
+
+                                    <a href="#"
+                class="btn-modern btn-delete-modern"
+                onclick="openModal('{{ d.nama_desa }}', '{% url 'kecamatan_desa_hapus' d.id %}')">
+                    Hapus
+                </a>
+
+
+                </td>
+
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center empty-row">
+                        📭 Belum ada desa yang terdaftar. Mulai dengan menambahkan desa baru.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- MODAL HAPUS -->
+<div id="modalHapus" class="modal-glass">
+    <div class="modal-content-glass">
+        <h4>⚠️ Konfirmasi Hapus</h4>
+        <p>
+            Anda yakin ingin menghapus desa
+            <span id="namaDesa" class="text-danger"></span>?
+            <br>
+            <small>Tindakan ini tidak dapat dibatalkan.</small>
+        </p>
+
+        <form method="post" id="formHapus">
+            {% csrf_token %}
+            <div class="modal-actions">
+                <button type="button" class="btn-modern" onclick="closeModal()">
+                    Batal
+                </button>
+                <button type="submit" class="btn-modern btn-delete-modern">
+                    Ya, Hapus
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+{% block extra_js %}
+<script>
+function openModal(nama, url) {
+    document.getElementById('modalHapus').classList.add('show');
+    document.getElementById('namaDesa').innerText = nama;
+    document.getElementById('formHapus').action = url;
+}
+
+function closeModal() {
+    document.getElementById('modalHapus').classList.remove('show');
+}
+</script>
+{% endblock %}

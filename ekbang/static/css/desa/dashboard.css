@@ -1,0 +1,278 @@
+/* ================================
+   DASHBOARD DESA
+================================ */
+.dashboard-wrapper {
+    padding: 2rem;
+    min-height: 100vh;
+}
+
+.dashboard-title {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 2.2rem;
+    letter-spacing: -0.5px;
+    margin-bottom: 2rem !important;
+}
+
+/* ================================
+   STAT CARDS
+================================ */
+.stat-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    border-radius: 16px;
+    padding: 1.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    height: 100%;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    flex-shrink: 0;
+}
+
+.stat-card h4 {
+    color: #ffffff;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem 0;
+    line-height: 1;
+}
+
+.stat-card span {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Warna Icon */
+.bg-cyan {
+    background: rgba(6, 182, 212, 0.2);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+.bg-emerald {
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.bg-warning {
+    background: rgba(245, 158, 11, 0.2);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.bg-danger {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* ================================
+   DIVIDER
+================================ */
+.divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 255, 255, 0.1) 20%, 
+        rgba(255, 255, 255, 0.1) 80%, 
+        transparent 100%);
+    margin: 2.5rem 0;
+}
+
+/* ================================
+   ACTION CARDS
+================================ */
+.action-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    border-radius: 16px;
+    padding: 1.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: block;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    height: 100%;
+}
+
+.action-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    text-decoration: none;
+}
+
+.action-card h5 {
+    color: #ffffff;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.action-card p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Variasi Action Card */
+.action-card.accent {
+    background: rgba(109, 40, 217, 0.15);
+    border-color: rgba(109, 40, 217, 0.3);
+}
+
+.action-card.accent:hover {
+    background: rgba(109, 40, 217, 0.2);
+}
+
+.action-card.warning {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.3);
+}
+
+.action-card.warning:hover {
+    background: rgba(245, 158, 11, 0.2);
+}
+
+/* ================================
+   GLASS BOX (Pengajuan Terakhir)
+================================ */
+.glass-box {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    border-radius: 16px;
+    padding: 1.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.glass-box h5 {
+    color: #ffffff;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    background-color: transparent;
+}
+
+/* ================================
+   TABLE STYLES
+================================ */
+.table {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.table thead th {
+    background-color: transparent;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem 0.75rem;
+}
+
+.table tbody td {
+    background-color: transparent;
+    padding: 1rem 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+}
+
+.table-borderless tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ================================
+   BADGE STATUS
+================================ */
+.badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.badge.bg-secondary {
+    background: rgba(100, 116, 139, 0.2) !important;
+    color: #cbd5e1 !important;
+    border: 1px solid rgba(100, 116, 139, 0.3);
+}
+
+/* ================================
+   TEXT MUTED (Custom)
+================================ */
+.text-muted {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+    .dashboard-wrapper {
+        padding: 1.5rem 1rem;
+    }
+    
+    .dashboard-title {
+        font-size: 1.8rem;
+    }
+    
+    .stat-card {
+        padding: 1.5rem;
+    }
+    
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+    
+    .stat-card h4 {
+        font-size: 1.75rem;
+    }
+    
+    .divider {
+        margin: 2rem 0;
+    }
+    
+    .glass-box {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .dashboard-title {
+        font-size: 1.5rem;
+    }
+    
+    .stat-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.25rem;
+    }
+    
+    .action-card {
+        padding: 1.25rem;
+    }
+    
+    .action-card h5 {
+        font-size: 1.1rem;
+    }
+}

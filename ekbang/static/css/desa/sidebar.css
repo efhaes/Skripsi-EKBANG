@@ -1,0 +1,319 @@
+/* ================================
+   MAIN CONTENT OFFSET
+================================ */
+.main-content {
+    margin-left: 250px;
+    padding: 28px;
+    min-height: 100vh;
+}
+
+/* ================================
+   SIDEBAR CONTAINER
+================================ */
+.sidebar-desa {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,0.07),
+            rgba(255,255,255,0.02)
+        );
+
+    backdrop-filter: blur(18px);
+    border-right: 1px solid rgba(255,255,255,0.1);
+
+    /* 🔥 BIKIN MELENGKUNG */
+    border-top-right-radius: 22px;
+    border-bottom-right-radius: 22px;
+
+    box-shadow:
+        4px 0 26px rgba(0,0,0,0.45),
+        inset -1px 0 0 rgba(255,255,255,0.06);
+
+    display: flex;
+    flex-direction: column;
+    padding: 20px 16px;
+    z-index: 30;
+}
+
+
+/* ================================
+   BRAND / HEADER
+================================ */
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* bisa dikurangi dari 12px */
+    padding: 14px;
+    margin-bottom: 22px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.06);
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.08),
+        0 8px 20px rgba(0,0,0,0.35);
+    color: #e5e7eb;
+}
+
+.sidebar-brand .logo {
+    display: flex; /* pastikan span ikut flex */
+    align-items: center;
+}
+
+.sidebar-brand .logo img {
+    width: 60px; /* pakai px biar konsisten */
+    height: 60px;
+    object-fit: contain;
+}
+
+
+
+.sidebar-brand strong {
+    font-size: 1rem;
+}
+
+.sidebar-brand small {
+    display: block;
+    font-size: 0.9rem;
+    color: #9ca3af;
+    margin-top: 2px;
+}
+
+/* ================================
+   MENU WRAPPER
+================================ */
+.sidebar-menu {
+    flex: 1;
+}
+
+/* ================================
+   SECTION TITLE
+================================ */
+.menu-section {
+    margin: 24px 10px 8px;
+    font-size: 0.65rem;
+    letter-spacing: 1.3px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    position: relative;
+}
+
+.menu-section::after {
+    content: '';
+    display: block;
+    height: 1px;
+    margin-top: 6px;
+    background: linear-gradient(
+        to right,
+        rgba(255,255,255,0.18),
+        transparent
+    );
+}
+
+/* ================================
+   MENU ITEM
+================================ */
+.menu-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 12px 16px;
+    margin: 6px 0;
+
+    border-radius: 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
+
+    color: #e5e7eb;
+    text-decoration: none;
+
+    background: rgba(255,255,255,0.04);
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.05);
+
+    transition: all .25s ease;
+}
+
+/* Hover */
+.menu-item:hover {
+    background: rgba(255,255,255,0.12);
+    transform: translateX(6px);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.1),
+        0 10px 22px rgba(0,0,0,0.4);
+}
+
+/* Active */
+.menu-item.active {
+    background: linear-gradient(
+        135deg,
+        rgba(34,211,238,0.38),
+        rgba(59,130,246,0.28)
+    );
+
+    box-shadow:
+        0 0 0 1px rgba(34,211,238,0.45),
+        0 12px 26px rgba(34,211,238,0.35);
+
+    font-weight: 600;
+}
+
+/* ================================
+   FOOTER
+================================ */
+.sidebar-footer {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* ================================
+   LOGOUT BUTTON
+================================ */
+.menu-item.logout {
+    background: rgba(239,68,68,0.10);
+    color: #fecaca;
+}
+
+.menu-item.logout:hover {
+    background: rgba(239,68,68,0.20);
+    box-shadow:
+        0 0 0 1px rgba(239,68,68,0.35),
+        0 10px 22px rgba(239,68,68,0.35);
+}
+
+/* ================================
+   SIDEBAR SCROLL AREA
+================================ */
+.sidebar-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+/* Smooth scroll */
+.sidebar-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.2) transparent;
+}
+
+/* Chrome / Edge */
+.sidebar-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+        180deg,
+        rgba(34,211,238,0.6),
+        rgba(59,130,246,0.4)
+    );
+    border-radius: 10px;
+}
+
+/* ===== BURGER BUTTON ===== */
+/* =========================
+   BURGER BUTTON (MOBILE)
+========================= */
+.burger {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 40;
+    display: none;
+    width: 46px;
+    height: 46px;
+
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+
+
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+
+    padding: 10px;
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 22px rgba(0,0,0,.45),
+        inset 0 0 0 1px rgba(255,255,255,0.05);
+
+    transition: all .25s ease;
+}
+
+/* hover */
+.burger:hover {
+    transform: scale(1.05);
+    background: rgba(255,255,255,0.14);
+}
+
+/* garis burger */
+.burger span {
+    height: 4px;              /* 🔥 LEBIH TEBAL */
+    width: 100%;
+    background: #f8fafc;
+    border-radius: 6px;
+    transition: all .3s ease;
+}
+
+/* =========================
+   ANIMASI JADI X
+========================= */
+/* X ANIMATION */
+body.sidebar-open .burger span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+}
+body.sidebar-open .burger span:nth-child(2) {
+    opacity: 0;
+}
+body.sidebar-open .burger span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+}
+
+/* ================= OVERLAY ================= */
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 25;
+    transition: .3s;
+}
+body.sidebar-open .sidebar-overlay {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 992px) {
+    .burger {
+        display: flex;
+    }
+    .main-content {
+        margin-left: 0;
+        padding-top: 72px;
+    }
+    .sidebar-desa {
+        transform: translateX(-100%);
+    }
+    body.sidebar-open .sidebar-desa {
+        transform: translateX(0);
+    }
+}
+

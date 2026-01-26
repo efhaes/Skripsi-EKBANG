@@ -1,0 +1,79 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/desa/sidebar.css' %}">
+
+<!-- BURGER -->
+<button class="burger" onclick="toggleSidebar()" aria-label="Menu">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<!-- OVERLAY -->
+<div class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<div class="sidebar-desa">
+    
+    <div class="sidebar-brand">
+       <span class="logo">
+    <img src="{% static 'img/logo.png' %}" alt="Logo" />
+</span>
+        <div>
+            <strong>EKBANG {{ request.user.role }}</strong>
+            <small>Admin Kecamatan</small>
+        </div>
+    </div>
+
+    <div class="sidebar-scroll">
+        <nav class="sidebar-menu">
+            <a href="{% url 'kecamatan_dashboard' %}" class="menu-item">📊 Dashboard</a>
+
+            <div class="menu-section">DATA</div>
+            <a href="{% url 'kecamatan_desa_list' %}" class="menu-item">👥 Data Akun Desa</a>
+            <a href="{% url 'kecamatan_desa_tambah' %}" class="menu-item">➕ Tambah Akun Desa</a>
+
+            <div class="menu-section">PENGAJUAN</div>
+            <a href="{% url 'kecamatan_pengajuan_list' %}" class="menu-item">📑 Data Pengajuan BLT Desa</a>
+           
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{% url 'logout' %}" class="menu-item logout">🚪 Logout</a>
+        </div>
+    </div>
+</div>
+
+
+{% block extra_js %}
+
+<script>
+function toggleSidebar() {
+    document.body.classList.toggle('sidebar-open');
+}
+function closeSidebar() {
+    document.body.classList.remove('sidebar-open');
+}
+
+/* AUTO CLOSE SAAT SCROLL */
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+    if (Math.abs(window.scrollY - lastScroll) > 10) {
+        closeSidebar();
+    }
+    lastScroll = window.scrollY;
+});
+
+/* RESET SAAT DESKTOP */
+window.addEventListener('resize', () => {
+    if (window.innerWidth >= 993) {
+        closeSidebar();
+    }
+});
+</script>
+
+
+
+
+
+{% endblock %}
+

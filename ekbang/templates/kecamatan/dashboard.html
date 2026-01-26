@@ -1,0 +1,79 @@
+{% extends 'base/base_kec.html' %}
+{%load static%}
+{% block title %}Dashboard Kecamatan{% endblock %}
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'css/kecamatan/dashboard.css' %}">
+
+
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-hero">
+    <div class="dashboard-hero-orb"></div>
+    
+    <div class="dashboard-hero-content">
+        <div class="dashboard-hero-icon">🏛️</div>
+        <h1 class="dashboard-hero-title">Dashboard EKBANG Kecamatan</h1>
+        <p class="dashboard-hero-subtitle">
+            Sistem manajemen pengajuan dan validasi BLT untuk wilayah kecamatan. 
+            Kelola data desa, validasi pengajuan, dan pantau distribusi bantuan sosial.
+        </p>
+        
+        <div class="dashboard-hero-description">
+            <p>
+                Aplikasi ini dirancang khusus untuk membantu kecamatan dalam proses 
+                validasi data BLT dengan efisien dan transparan.
+            </p>
+        </div>
+    </div>
+</div>
+<div class="dashboard-container">
+    <h1 class="dashboard-title">Dashboard Admin Kecamatan</h1>
+    
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+        <div class="stat-card stat-card-total-desa">
+            <div class="stat-card-title">
+                <span>Total Desa</span>
+            </div>
+            <div class="stat-card-value">{{ total_desa }}</div>
+            <div class="stat-card-icon">🏘️</div>
+        </div>
+        
+        <div class="stat-card stat-card-total-pengajuan">
+            <div class="stat-card-title">
+                <span>Total Pengajuan</span>
+            </div>
+            <div class="stat-card-value">{{ total_pengajuan }}</div>
+            <div class="stat-card-icon">📄</div>
+        </div>
+        
+        <div class="stat-card stat-card-pending">
+            <div class="stat-card-title">
+                <span>Menunggu Validasi</span>
+            </div>
+            <div class="stat-card-value">{{ pengajuan_pending }}</div>
+            <div class="stat-card-icon">⏳</div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <h3 class="quick-actions-title">Aksi Cepat</h3>
+        <div class="actions-grid">
+            <a href="{% url 'kecamatan_desa_list' %}" class="action-btn action-btn-kelola">
+                Kelola Data Desa
+            </a>
+            <a href="{% url 'kecamatan_pengajuan_list' %}" class="action-btn action-btn-validasi">
+                Validasi Pengajuan BLT
+            </a>
+        </div>
+    </div>
+    
+
+</div>
+
+{% endblock %}

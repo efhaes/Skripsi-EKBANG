@@ -1,0 +1,358 @@
+/* ================================
+   DASHBOARD KECAMATAN
+================================ */
+
+/* ================================
+   DASHBOARD HERO SECTION
+================================ */
+.dashboard-hero {
+    padding: 3rem 2rem;
+    margin: 0 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.dashboard-hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+}
+
+.dashboard-hero-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    display: inline-block;
+}
+
+.dashboard-hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+    background: linear-gradient(135deg, #ffffff 0%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.dashboard-hero-subtitle {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.dashboard-hero-description {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-top: 1.5rem;
+}
+
+.dashboard-hero-description p {
+    color: #93c5fd;
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.dashboard-hero-orb {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.2;
+    z-index: 1;
+    right: -100px;
+    top: -100px;
+    background: linear-gradient(135deg, rgb(109, 40, 217), rgb(59, 130, 246));
+}
+
+/* ================================
+   DASHBOARD CONTAINER (disesuaikan)
+================================ */
+.dashboard-container {
+    padding: 0 2rem 2rem;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+    .dashboard-hero {
+        margin: 0 1rem 1.5rem;
+        padding: 2rem 1.5rem;
+        border-radius: 16px;
+    }
+    
+    .dashboard-hero-title {
+        font-size: 2rem;
+    }
+    
+    .dashboard-hero-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .dashboard-hero-icon {
+        font-size: 2.5rem;
+    }
+    
+    .dashboard-container {
+        padding: 0 1rem 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .dashboard-hero {
+        padding: 1.75rem 1.25rem;
+    }
+    
+    .dashboard-hero-title {
+        font-size: 1.7rem;
+    }
+    
+    .dashboard-hero-subtitle {
+        font-size: 1rem;
+    }
+}
+.dashboard-container {
+    padding: 2rem;
+}
+
+.dashboard-title {
+    color: #ffffff;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    font-size: 2.2rem;
+    letter-spacing: -0.5px;
+}
+
+/* ================================
+   STATS CARDS
+================================ */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    border-radius: 16px;
+    padding: 1.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    border-radius: 16px 16px 0 0;
+}
+
+.stat-card-total-desa::before {
+    background: linear-gradient(90deg, #3b82f6, #6366f1);
+}
+
+.stat-card-total-pengajuan::before {
+    background: linear-gradient(90deg, #10b981, #34d399);
+}
+
+.stat-card-pending::before {
+    background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+.stat-card-title {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stat-card-value {
+    color: #ffffff;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0;
+    line-height: 1;
+}
+
+.stat-card-icon {
+    position: absolute;
+    right: 1.5rem;
+    top: 1.5rem;
+    opacity: 0.7;
+    font-size: 3rem;
+}
+
+/* ================================
+   QUICK ACTIONS
+================================ */
+.quick-actions {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(15px);
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    margin-top: 2rem;
+}
+
+.quick-actions-title {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.action-btn {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    color: #ffffff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.action-btn-kelola::before {
+    content: "🏘️";
+    font-size: 1.25rem;
+}
+
+.action-btn-validasi::before {
+    content: "📋";
+    font-size: 1.25rem;
+}
+
+/* ================================
+   RECENT ACTIVITY (Optional)
+================================ */
+.recent-activity {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(15px);
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    margin-top: 2rem;
+}
+
+.recent-activity-title {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.activity-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.activity-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 1.5rem 1rem;
+    }
+    
+    .dashboard-title {
+        font-size: 1.8rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .stat-card {
+        padding: 1.5rem;
+    }
+    
+    .stat-card-value {
+        font-size: 2rem;
+    }
+    
+    .quick-actions {
+        padding: 1.5rem;
+    }
+    
+    .actions-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .dashboard-title {
+        font-size: 1.5rem;
+    }
+    
+    .stat-card {
+        padding: 1.25rem;
+    }
+    
+    .stat-card-icon {
+        font-size: 2rem;
+        top: 1.25rem;
+        right: 1.25rem;
+    }
+}

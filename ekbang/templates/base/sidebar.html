@@ -1,0 +1,82 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/desa/sidebar.css' %}">
+
+<!-- BURGER -->
+<button class="burger" onclick="toggleSidebar()" aria-label="Menu">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<!-- OVERLAY -->
+<div class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<div class="sidebar-desa">
+    
+    <div class="sidebar-brand">
+       <span class="logo">
+    <img src="{% static 'img/logo.png' %}" alt="Logo" />
+</span>
+        <div>
+            <strong>BLT Desa {{ request.user.username }}</strong>
+            <small>Admin Desa</small>
+        </div>
+    </div>
+
+    <div class="sidebar-scroll">
+        <nav class="sidebar-menu">
+            <a href="{% url 'desa_dashboard' %}" class="menu-item">📊 Dashboard</a>
+
+            <div class="menu-section">DATA</div>
+            <a href="{% url 'desa_warga_list' %}" class="menu-item">👥 Data Warga</a>
+            <a href="{% url 'desa_warga_tambah' %}" class="menu-item">➕ Tambah Warga</a>
+
+            <div class="menu-section">PERHITUNGAN</div>
+            <a href="{% url 'desa_hasil_saw' %}" class="menu-item">🧮 Hasil SAW</a>
+
+            <div class="menu-section">PENGAJUAN</div>
+            <a href="{% url 'desa_pengajuan' %}" class="menu-item">📑 Pengajuan BLT</a>
+            <a href="{% url 'desa_pengajuan_list' %}" class="menu-item">📑 Data Pengajuan BLT</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{% url 'logout' %}" class="menu-item logout">🚪 Logout</a>
+        </div>
+    </div>
+</div>
+
+
+{% block extra_js %}
+
+<script>
+function toggleSidebar() {
+    document.body.classList.toggle('sidebar-open');
+}
+function closeSidebar() {
+    document.body.classList.remove('sidebar-open');
+}
+
+/* AUTO CLOSE SAAT SCROLL */
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+    if (Math.abs(window.scrollY - lastScroll) > 10) {
+        closeSidebar();
+    }
+    lastScroll = window.scrollY;
+});
+
+/* RESET SAAT DESKTOP */
+window.addEventListener('resize', () => {
+    if (window.innerWidth >= 993) {
+        closeSidebar();
+    }
+});
+</script>
+
+
+
+
+
+{% endblock %}
+

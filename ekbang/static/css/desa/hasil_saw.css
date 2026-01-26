@@ -1,0 +1,470 @@
+/* ============================= */
+/* TABLE SAW – IMPROVED UI */
+/* ============================= */
+.saw-hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 28px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
+    margin-bottom: 28px;
+}
+
+.saw-hero-left h3 {
+    color: #f9fafb;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.saw-hero-left p {
+    color: #cbd5f5;
+    font-size: 0.9rem;
+    max-width: 520px;
+}
+
+/* ===== GAME BUTTON BASE ===== */
+.btn-game {
+    position: relative;
+    padding: 10px 18px;
+    border-radius: 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: all .25s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    user-select: none;
+}
+
+/* ===== PRIMARY GAME BUTTON ===== */
+/* ===== PRIMARY GAME BUTTON ===== */
+.btn-game-primary {
+    color: #e6fdff;
+    background: rgba(34,211,238,.22);
+    border: 1px solid rgba(148,163,184,.18);
+
+    box-shadow:
+        0 0 0 rgba(0,0,0,0),
+        0 6px 14px rgba(34,211,238,.25);
+}
+
+/* Glow layer */
+.btn-game-primary::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+
+    background: radial-gradient(
+        circle at top left,
+        rgba(34,211,238,.45),
+        rgba(56,189,248,.25),
+        transparent 65%
+    );
+
+    opacity: 0;
+    filter: blur(16px);
+    transition: opacity .25s ease;
+    z-index: -1;
+}
+
+/* Hover */
+.btn-game-primary:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 0 10px rgba(34,211,238,.35),
+        0 10px 26px rgba(34,211,238,.30);
+}
+
+.btn-game-primary:hover::after {
+    opacity: .6;
+}
+
+/* Active */
+.btn-game-primary:active {
+    transform: translateY(1px) scale(0.97);
+    box-shadow:
+        0 4px 10px rgba(34,211,238,.25);
+}
+
+
+/* ===== OUTLINE GAME BUTTON ===== */
+.btn-game-outline {
+    color: #e5e7eb;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(8px);
+}
+
+.btn-game-outline:hover {
+    background: rgba(255,255,255,0.16);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255,255,255,0.15);
+}
+
+.btn-game-outline:active {
+    transform: translateY(1px);
+}
+
+
+
+.saw-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(255,255,255,.10),
+        rgba(255,255,255,.04)
+    );
+    border: 1px solid rgba(148,163,184,.25);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: 14px;
+    overflow: hidden;
+    color: #e5e7eb;
+    margin-bottom: 26px;
+    font-size: 0.9rem;
+    box-shadow: 
+        0 10px 30px rgba(0,0,0,.25),
+        inset 0 1px 0 rgba(255,255,255,.08);
+    transition: all .3s ease;
+}
+
+/* ===== HEADER ===== */
+.saw-table thead {
+    background: linear-gradient(
+        135deg,
+        rgba(99,102,241,.25),
+        rgba(14,165,233,.18)
+    );
+}
+
+.saw-table th {
+    padding: 14px 12px;
+    text-align: center;
+    font-weight: 600;
+    color: #f9fafb;
+    background: rgba(255,255,255,.08);
+    border-right: 1px solid rgba(148,163,184,.2);
+    border-bottom: 1px solid rgba(255,255,255,.15);
+    letter-spacing: .3px;
+}
+
+.saw-table th:last-child {
+    border-right: none;
+}
+
+.saw-table th small {
+    display: block;
+    font-size: 0.7rem;
+    opacity: 0.75;
+    margin-top: 4px;
+    color: #c7d2fe;
+}
+
+/* ===== BODY ===== */
+.saw-table td {
+    padding: 12px 10px;
+    text-align: center;
+    border-right: 1px solid rgba(148,163,184,.12);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.saw-table td:last-child {
+    border-right: none;
+}
+
+.saw-table td:first-child {
+    text-align: left;
+    font-weight: 500;
+    color: #f1f5f9;
+}
+
+/* ===== ROW EFFECT ===== */
+.saw-table tbody tr {
+    transition: all .25s ease;
+}
+
+.saw-table tbody tr:hover {
+    background: linear-gradient(
+        90deg,
+        rgba(255,255,255,.10),
+        rgba(255,255,255,.04)
+    );
+    transform: scale(1.003);
+}
+
+/* ============================= */
+/* RANK TABLE SPECIAL */
+/* ============================= */
+
+.rank-table tbody tr {
+    transition: all .25s ease;
+}
+
+.rank-table tbody tr:hover {
+    background: rgba(34,211,238,.08);
+    transform: translateX(4px);
+}
+
+/* ===== RANK BADGE ===== */
+.rank-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .75rem;
+    font-weight: 700;
+    color: #ecfeff;
+    background: rgba(148,163,184,.25);
+}
+
+/* Top 3 highlight */
+.rank-1 {
+    background: linear-gradient(135deg, #facc15, #fbbf24);
+    color: #111827;
+    box-shadow: 0 0 12px rgba(250,204,21,.6);
+}
+
+.rank-2 {
+    background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+    color: #0f172a;
+}
+
+.rank-3 {
+    background: linear-gradient(135deg, #fb923c, #f97316);
+    color: #0f172a;
+}
+
+/* ===== TOP RANK ROW ===== */
+.rank-top {
+    background: linear-gradient(
+        90deg,
+        rgba(250,204,21,.15),
+        rgba(34,211,238,.08)
+    );
+}
+
+/* ===== NAME ===== */
+.rank-name {
+    font-weight: 600;
+    color: #e5e7eb;
+}
+
+.rank-crown {
+    margin-left: 6px;
+    font-size: .9rem;
+}
+
+/* ===== SCORE ===== */
+.rank-score {
+
+    font-size: .85rem;
+    color: #a5f3fc;
+}
+
+
+/* ===== SECOND & THIRD (OPTIONAL BONUS) ===== */
+.rank-table tbody tr:nth-child(2) {
+    background: rgba(148,163,184,.12);
+}
+
+.rank-table tbody tr:nth-child(3) {
+    background: rgba(148,163,184,.08);
+}
+
+.page .text-muted {
+    color: #ffffff !important;
+    opacity: 0.85; /* biar tetap lembut */
+}
+
+.page .alert-secondary {
+    color: #ffffff !important;
+    background: rgba(255,255,255,0.08) !important;
+    border: 1px solid rgba(255,255,255,0.12);
+}
+
+
+
+/* ===== MODAL BACKDROP ===== */
+/* ============================= */
+/* MODAL OVERLAY */
+/* ============================= */
+.saw-modal {
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(2,6,23,0.55),
+            rgba(2,6,23,0.85)
+        );
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 16px;
+}
+
+/* ============================= */
+/* MODAL CARD */
+/* ============================= */
+.saw-modal-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 26px 24px;
+    border-radius: 18px;
+
+    background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.18),
+        rgba(255,255,255,0.08)
+    );
+
+    border: 1px solid rgba(255,255,255,0.25);
+    backdrop-filter: blur(16px);
+    color: #f9fafb;
+
+    box-shadow:
+        0 30px 70px rgba(0,0,0,0.55),
+        inset 0 1px 0 rgba(255,255,255,0.25);
+
+    animation: modalIn .35s cubic-bezier(.2,.8,.2,1);
+}
+
+/* ============================= */
+/* TITLE */
+/* ============================= */
+.saw-modal-card h5 {
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Subtitle feel */
+.saw-modal-card h5::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+        to right,
+        rgba(255,255,255,.35),
+        transparent
+    );
+    margin-left: 8px;
+}
+
+/* ============================= */
+/* CONTENT */
+/* ============================= */
+.saw-modal-card p {
+    font-size: 0.85rem;
+    line-height: 1.7;
+    opacity: 0.92;
+    margin-bottom: 8px;
+}
+
+/* Optional: rapihin bullet look */
+.saw-modal-card p br {
+    line-height: 1.9;
+}
+
+/* ============================= */
+/* ACTION BUTTONS */
+/* ============================= */
+.saw-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+/* Button feel improvement */
+.saw-modal-actions .btn {
+    border-radius: 12px;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+}
+
+/* ============================= */
+/* ANIMATION */
+/* ============================= */
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.94);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+
+/* ============================= */
+/* TABLE RESPONSIVE SCROLL */
+/* ============================= */
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 14px;
+}
+
+/* scrollbar tipis & smooth */
+.table-scroll::-webkit-scrollbar {
+    height: 6px;
+}
+.table-scroll::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px;
+}
+.table-scroll::-webkit-scrollbar-thumb {
+    background: rgba(34,211,238,.45);
+    border-radius: 10px;
+}
+
+/* ============================= */
+/* MOBILE RESPONSIVE */
+/* ============================= */
+@media (max-width: 768px) {
+
+    .saw-hero {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 20px;
+    }
+
+    .saw-hero-actions {
+        width: 100%;
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn-game {
+        flex: 1;
+        justify-content: center;
+        font-size: 0.8rem;
+    }
+
+    .saw-hero-left p {
+        font-size: 0.8rem;
+    }
+}
+

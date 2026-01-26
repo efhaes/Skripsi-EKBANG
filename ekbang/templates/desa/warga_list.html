@@ -1,0 +1,51 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block title %}Data Warga{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/desa/warga_list.css' %}">
+{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2>Data Warga Desa {{ request.user.username }}</h2>
+        <p>Daftar penduduk terdaftar dalam sistem</p>
+    </div>
+
+    <a href="{% url 'desa_warga_tambah' %}" class="btn-glass">
+        ➕ Tambah Warga
+    </a>
+</div>
+
+
+<div class="glass-card">
+    <table class="table-modern">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>NIK</th>
+                <th>Nama</th>
+                <th>Alamat</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for w in warga %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ w.nik }}</td>
+                <td>{{ w.nama }}</td>
+                <td>{{ w.alamat }}</td>
+                <td class="action">
+                    <a href="{% url 'desa_warga_edit' w.id %}" class="btn-icon edit">✏️</a>
+                    <a href="{% url 'desa_warga_hapus' w.id %}"
+                       class="btn-icon delete"
+                       onclick="return confirm('Yakin hapus data ini?')">🗑</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

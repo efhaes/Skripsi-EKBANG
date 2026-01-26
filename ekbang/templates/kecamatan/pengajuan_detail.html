@@ -1,0 +1,130 @@
+{% extends 'base/base_kec.html' %}
+
+{% load static %}
+{% load humanize %}
+
+{% block title %}Detail Pengajuan BLT{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/kecamatan/pengajuan_detail.css' %}">
+{% endblock %}
+{% block content %}
+
+<div class="hero-validasi">
+    <div class="hero-validasi-orb"></div>
+    
+    <div class="hero-validasi-content">
+        <div class="hero-validasi-icon">📄</div>
+        <h1 class="hero-validasi-title">Detail Pengajuan BLT</h1>
+        <p class="hero-validasi-subtitle">
+            Berikut adalah detail pengajuan BLT dari desa. Anda dapat mengecek data dan melakukan validasi.
+        </p>
+        
+        <div class="hero-validasi-info">
+            <p>Setelah status divalidasi, data tidak dapat diubah kembali.</p>
+        </div>
+    </div>
+</div>
+<div class="card-detail">
+    <div class="card-header-detail">
+        <h5>Detail Pengajuan BLT</h5>
+    </div>
+
+    <div class="card-body-detail">
+        <!-- INFO PENGAJUAN -->
+        <table class="table-detail">
+            <tr>
+                <th>Desa</th>
+                <td>{{ pengajuan.desa.nama_desa }}</td>
+            </tr>
+            <tr>
+                <th>Tahun</th>
+                <td>{{ pengajuan.tahun }}</td>
+            </tr>
+            <tr>
+                <th>Tahap</th>
+                <td>{{ pengajuan.tahap }}</td>
+            </tr>
+            <tr>
+                <th>Jumlah KPM</th>
+                <td>{{ pengajuan.jumlah_kpm }} orang</td>
+            </tr>
+            <tr>
+                <th>Jumlah Dana</th>
+                <td>Rp {{ pengajuan.jumlah_dana|intcomma }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>
+                    {% if pengajuan.status == 'pending' %}
+                        <span class="badge-status status-pending">Pending</span>
+                    {% elif pengajuan.status == 'valid' %}
+                        <span class="badge-status status-valid">Valid</span>
+                    {% else %}
+                        <span class="badge-status status-tidak_valid">Tidak Valid</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Hasil Seleksi Penerima
+                    <small class="text-muted" style="display: block; font-weight: normal; color: white;">
+                        (berdasarkan metode perhitungan SAW)
+                    </small>
+                </th>
+                <td>
+                    <a href="{{ pengajuan.file_hasil_saw.url }}" class="btn-download" target="_blank">
+                        Download Dokumen
+                    </a>
+                    <small style="display: block; color: rgba(255,255,255,0.6); margin-top: 0.5rem;">
+                        Berisi daftar calon penerima yang telah diseleksi
+                    </small>
+                </td>
+            </tr>
+            <tr>
+                <th>Tanggal Pengajuan</th>
+                <td>{{ pengajuan.created_at|date:"d M Y H:i" }}</td>
+            </tr>
+        </table>
+
+        <div class="divider"></div>
+
+        <!-- FORM VALIDASI -->
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="form-label">Status Validasi</label>
+                <select name="status" class="form-control-custom" {% if locked %}disabled{% endif %}>
+                    <option value="pending" {% if pengajuan.status == 'pending' %}selected{% endif %}>Pending</option>
+                    <option value="valid" {% if pengajuan.status == 'valid' %}selected{% endif %}>Valid</option>
+                    <option value="tidak_valid" {% if pengajuan.status == 'tidak_valid' %}selected{% endif %}>Tidak Valid</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Catatan Kecamatan</label>
+                <textarea name="catatan" class="form-control-custom" rows="3" 
+                    {% if locked %}readonly{% endif %}
+                    placeholder="Berikan catatan jika diperlukan...">{{ pengajuan.catatan }}</textarea>
+            </div>
+
+            {% if not locked %}
+                <button type="submit" class="btn-submit">
+                    Simpan Validasi
+                </button>
+            {% else %}
+                <div class="alert-status">
+                    🔒 <b>Sudah divalidasi</b><br>
+                    <div>
+                        <span>👤 Oleh: <b>{{ pengajuan.divalidasi_oleh.username }}</b></span>
+                    </div>
+                    <div>
+                        <span>🕒 {{ pengajuan.tanggal_validasi|date:"d M Y H:i" }}</span>
+                    </div>
+                </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}

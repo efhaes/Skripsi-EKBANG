@@ -1,0 +1,160 @@
+
+
+
+/* =============================
+   FORM WARGA - GLASS STYLE
+============================= */
+
+.form-wrapper {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+    color: #e5e7eb;
+    max-width: 1100px;
+    margin: auto;
+}
+
+/* TITLE */
+.form-title {
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 28px;
+    letter-spacing: .4px;
+}
+
+/* SECTION */
+.form-section-title {
+    font-weight: 500;
+    color: #e5e7eb;
+    margin-bottom: 16px;
+}
+
+/* LABEL */
+.form-wrapper label {
+    font-size: .9rem;
+    margin-bottom: 6px;
+    display: block;
+    color: #c7d2fe;
+}
+
+/* INPUT, SELECT, TEXTAREA */
+.form-wrapper input,
+.form-wrapper select,
+.form-wrapper textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #ffffff;
+    transition: all .25s ease;
+}
+
+.form-wrapper textarea {
+    min-height: 90px;
+}
+
+/* PLACEHOLDER */
+.form-wrapper input::placeholder,
+.form-wrapper textarea::placeholder {
+    color: rgba(255,255,255,.5);
+}
+
+/* FOCUS */
+.form-wrapper input:focus,
+.form-wrapper select:focus,
+.form-wrapper textarea:focus {
+    outline: none;
+    background: rgba(255,255,255,0.18);
+    border-color: rgba(34,211,238,.8);
+    box-shadow: 0 0 0 2px rgba(34,211,238,.25);
+}
+
+/* HR */
+.form-wrapper hr {
+    border-color: rgba(255,255,255,.2);
+    margin: 30px 0 18px;
+}
+
+/* BUTTON AREA */
+.form-actions {
+    margin-top: 28px;
+    display: flex;
+    gap: 12px;
+}
+
+/* BUTTON */
+.form-actions .btn {
+    padding: 10px 22px;
+    border-radius: 14px;
+    font-weight: 500;
+    transition: all .25s ease;
+}
+
+/* SUCCESS */
+.form-actions .btn-success {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    border: none;
+}
+
+.form-actions .btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(34,197,94,.35);
+}
+
+/* BACK */
+.form-actions .btn-outline-light {
+    border-color: rgba(255,255,255,.35);
+    color: #ffffff;
+}
+
+.form-actions .btn-outline-light:hover {
+    background: rgba(255,255,255,.15);
+}
+
+.criteria-box {
+    margin-bottom: 30px;
+}
+
+.criteria-title {
+    font-weight: 600;
+    color: #e5f2ff;
+    margin-bottom: 20%;
+}
+
+.criteria-desc {
+    font-size: .85rem;
+    color: #94a3b8;
+    margin-bottom: 14px;
+}
+
+.radio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 12px;
+}
+
+.radio-card input {
+    display: none;
+}
+
+.radio-content {
+    padding: 14px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(148,163,184,.2);
+    transition: .25s;
+}
+
+.radio-card:hover .radio-content {
+    background: rgba(255,255,255,.14);
+}
+
+.radio-card input:checked + .radio-content {
+    border-color: #22d3ee;
+    background: rgba(34,211,238,.2);
+    box-shadow: 0 0 0 2px rgba(34,211,238,.35);
+}
+

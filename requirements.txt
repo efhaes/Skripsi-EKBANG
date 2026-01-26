@@ -1,0 +1,15 @@
+Django==5.2.6
+gunicorn==23.0.0
+whitenoise==6.9.0
+
+django-crispy-forms==2.4
+django-widget-tweaks==1.5.0
+django-import-export==4.3.7
+djangorestframework==3.16.0
+
+openpyxl==3.1.5
+pandas==2.2.3
+numpy==1.26.4
+PuLP==2.9.0
+
+python-decouple==3.8

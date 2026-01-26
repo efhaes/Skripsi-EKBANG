@@ -1,0 +1,186 @@
+{% extends 'base/base.html' %}
+{%load static%}
+{% block title %}Perhitungan SAW BLT Desa {{ request.user.username }}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/desa/hasil_saw.css' %}">{% endblock %}
+
+{% block content %}
+{% if not sudah_diproses %}
+<div class="alert alert-warning">
+    ⚠️ Data belum diproses. Klik <b>Proses SAW</b> untuk menghitung prioritas BLT.
+</div>
+{% endif %}
+
+<div class="saw-hero">
+    <div class="saw-hero-left">
+        <h3>📊 Penentuan Prioritas BLT Desa{{ request.user.username }} </h3>
+        <p>
+            Sistem pendukung keputusan menggunakan metode
+            <strong>Simple Additive Weighting (SAW)</strong>
+            untuk menentukan penerima BLT secara objektif dan transparan.
+        </p>
+    </div>
+
+    <div class="saw-hero-actions">
+       <button class="btn-game btn-game-primary"
+        onclick="openSawModal()">
+    ⚙️ PROSES SAW
+</button>
+
+<a href="{% url 'desa_export_saw_excel' %}"
+   class="btn-game btn-game-outline">
+   📥 EXPORT EXCEL
+</a>
+
+
+    </div>
+</div>
+
+
+<!-- ============================= -->
+<!-- 1. MATRIKS KEPUTUSAN -->
+<!-- ============================= -->
+<h5 class="text-light">1️⃣ Matriks Keputusan</h5>
+<div class="table-scroll">
+<table class="saw-table">
+    <thead>
+        <tr>
+            <th>Nama</th>
+            <th>Desil P3KE</th>
+            <th>Kehilangan<br>Pekerjaan</th>
+            <th>Sakit<br>Kronis</th>
+            <th>PKH</th>
+            <th>Lansia<br>Tunggal</th>
+            <th>Perempuan<br>KK</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for h in hasil %}
+        <tr>
+            <td>{{ h.warga.nama }}</td>
+            <td>{{ h.warga.desil_p3ke }}</td>
+            <td>{{ h.warga.kehilangan_pekerjaan }}</td>
+            <td>{{ h.warga.sakit_kronis }}</td>
+            <td>{{ h.warga.tidak_pkh }}</td>
+            <td>{{ h.warga.lansia_tunggal }}</td>
+            <td>{{ h.warga.perempuan_kepala }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<!-- ============================= -->
+<!-- 2. MATRIKS NORMALISASI -->
+<!-- ============================= -->
+<h5 class="text-light mt-4">2️⃣ Matriks Normalisasi</h5>
+<p class="text-muted small">
+Nilai hasil normalisasi (0–1) berdasarkan nilai tertinggi tiap kriteria.
+</p>
+<div class="table-scroll">
+<table class="saw-table">
+    <thead>
+        <tr>
+            <th>Nama</th>
+            <th>R1<br><small>Desil</small></th>
+            <th>R2<br><small>Pekerjaan</small></th>
+            <th>R3<br><small>Sakit</small></th>
+            <th>R4<br><small>PKH</small></th>
+            <th>R5<br><small>Lansia</small></th>
+            <th>R6<br><small>Perempuan KK</small></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for n in normalisasi %}
+            <tr>
+                <td>{{ n.warga.nama }}</td>
+                <td>{{ n.desil_p3ke|floatformat:3 }}</td>
+                <td>{{ n.kehilangan_pekerjaan|floatformat:3 }}</td>
+                <td>{{ n.sakit_kronis|floatformat:3 }}</td>
+                <td>{{ n.pkh|floatformat:3 }}</td>
+                <td>{{ n.lansia_tunggal|floatformat:3 }}</td>
+                <td>{{ n.perempuan_kepala|floatformat:3 }}</td>
+            </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+</div>
+<!-- ============================= -->
+<!-- 3. NILAI & RANKING -->
+<!-- ============================= -->
+<h5 class="text-light mt-4">3️⃣ Nilai Preferensi & Ranking</h5>
+<div class="table-scroll">
+<table class="saw-table rank-table">
+    <thead>
+        <tr>
+            <th>Ranking</th>
+            <th>Nama Warga</th>
+            <th>Nilai Preferensi</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for h in hasil %}
+        <tr class="{% if forloop.first %}rank-top{% endif %}">
+            <td>
+                <span class="rank-badge rank-{{ forloop.counter }}">
+                    {{ forloop.counter }}
+                </span>
+            </td>
+            <td class="rank-name">
+                {{ h.warga.nama }}
+                
+            </td>
+            <td class="rank-score">
+                {{ h.nilai_preferensi|floatformat:4 }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<div class="alert alert-secondary small mt-4"
+     style="background: rgba(255,255,255,0.08); border:none;">
+    💡 Semakin besar nilai preferensi, semakin tinggi prioritas penerima BLT Desa.
+</div>
+
+<div class="saw-modal" id="sawModal">
+    <div class="saw-modal-card">
+        <h5>⚙️ Proses Perhitungan SAW</h5>
+
+        <p>
+            Sistem akan menghitung:
+            <br>• Matriks Keputusan
+            <br>• Normalisasi
+            <br>• Nilai Preferensi
+            <br>• Ranking Prioritas
+        </p>
+
+        <div class="saw-modal-actions">
+            <button class="btn btn-outline-light btn-sm"
+                    onclick="closeSawModal()">
+                ❌ Batal
+            </button>
+
+            <a href="{% url 'desa_proses_saw' %}"
+               class="btn btn-success btn-sm">
+                ✅ Proses Sekarang
+            </a>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block extra_js %}<script>
+function openSawModal() {
+    document.getElementById('sawModal').style.display = 'flex';
+}
+
+function closeSawModal() {
+    document.getElementById('sawModal').style.display = 'none';
+}
+</script>{% endblock %}
+

@@ -1,0 +1,71 @@
+{% extends 'base/base_kec.html' %}
+{% load static %}
+
+{% block title %}
+    {% if edit %}Edit Desa{% else %}Tambah Desa{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/kecamatan/form_desa.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="form-glass">
+    <h3>
+        {% if edit %}
+            Form Edit Desa
+        {% else %}
+            Form Tambah Desa
+        {% endif %}
+    </h3>
+
+   <form method="post">
+    {% csrf_token %}
+
+    <div class="form-group">
+        {{ form.username.label_tag }}
+        {{ form.username }}
+        {{ form.username.errors }}
+    </div>
+
+    <div class="form-group">
+        {{ form.nama_desa.label_tag }}
+        {{ form.nama_desa }}
+        {{ form.nama_desa.errors }}
+    </div>
+
+    <div class="form-group">
+        {{ form.kecamatan.label_tag }}
+        {{ form.kecamatan }}
+        {{ form.kecamatan.errors }}
+    </div>
+
+    <div class="form-group">
+        {{ form.alamat_kantor.label_tag }}
+        {{ form.alamat_kantor }}
+        {{ form.alamat_kantor.errors }}
+    </div>
+
+    <div class="form-group">
+        {{ form.password.label_tag }}
+        {{ form.password }}
+        {{ form.password.errors }}
+
+        {% if edit %}
+            <small class="form-hint">
+                Kosongkan jika tidak ingin mengubah password
+            </small>
+        {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-success">
+        {% if edit %}Update{% else %}Simpan{% endif %}
+    </button>
+
+    <a href="{% url 'kecamatan_desa_list' %}" class="btn btn-secondary ms-2">
+        Kembali
+    </a>
+</form>
+
+</div>
+{% endblock %}

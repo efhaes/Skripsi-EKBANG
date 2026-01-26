@@ -1,0 +1,151 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block title %}Form Warga{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/desa/form_warga.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="form-wrapper">
+
+    <h4 class="form-title">Form Data Warga {{ request.user.username }}</h4>
+
+    <div class="alert alert-warning small">
+    <strong>Tujuan Pengisian Data</strong><br>
+    Form ini digunakan untuk menilai kelayakan warga dalam menerima Bantuan Langsung Tunai (BLT) Desa
+    secara adil dan transparan. Data yang diisi akan diproses oleh sistem untuk menentukan prioritas penerima bantuan.
+</div>
+
+
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- DATA UTAMA -->
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label>NIK</label>
+                {{ form.nik }}
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Nama Lengkap</label>
+                {{ form.nama }}
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label>Alamat</label>
+            {{ form.alamat }}
+        </div>
+
+        <hr>
+
+        <h6 class="form-section-title">Kriteria Penilaian BLT Desa</h6>
+
+        <!-- DESIL P3KE -->
+        <div class="criteria-box">
+            <div class="criteria-header">
+                <strong>Desil P3KE</strong>
+                <span>Prioritas Kemiskinan</span>
+            </div>
+
+            <p class="criteria-desc">
+                Berdasarkan data P3KE nasional. Prioritas utama adalah Desil 1.
+            </p>
+
+            <div class="radio-grid">
+                {% for radio in form.desil_p3ke %}
+                <label class="radio-card">
+                    {{ radio.tag }}
+                    <div class="radio-content">
+                        {{ radio.choice_label }}
+                    </div>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- KRITERIA LAIN -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="criteria-box">
+                    <strong class="criteria-title">Kehilangan Pekerjaan</strong>
+                    
+                    <div class="radio-grid">
+                        {% for radio in form.kehilangan_pekerjaan %}
+                        <label class="radio-card">
+                            {{ radio.tag }}
+                            <div class="radio-content">{{ radio.choice_label }}</div>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="criteria-box">
+                    <strong class="criteria-title">Sakit Kronis / Difabel</strong>
+                    <div class="radio-grid">
+                        {% for radio in form.sakit_kronis %}
+                        <label class="radio-card">
+                            {{ radio.tag }}
+                            <div class="radio-content">{{ radio.choice_label }}</div>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="criteria-box">
+                    <strong class="criteria-title">Status PKH</strong>
+                    <div class="radio-grid">
+                        {% for radio in form.tidak_pkh %}
+                        <label class="radio-card">
+                            {{ radio.tag }}
+                            <div class="radio-content">{{ radio.choice_label }}</div>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="criteria-box">
+                    <strong class="criteria-title">Lansia Tunggal</strong>
+                    <div class="radio-grid">
+                        {% for radio in form.lansia_tunggal %}
+                        <label class="radio-card">
+                            {{ radio.tag }}
+                            <div class="radio-content">{{ radio.choice_label }}</div>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="criteria-box">
+                    <strong class="criteria-title">Perempuan Kepala Keluarga</strong>
+                    <div class="radio-grid">
+                        {% for radio in form.perempuan_kepala %}
+                        <label class="radio-card">
+                            {{ radio.tag }}
+                            <div class="radio-content">{{ radio.choice_label }}</div>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTION -->
+        <div class="form-actions">
+            <button class="btn btn-success">💾 Simpan Data</button>
+            <a href="{% url 'desa_warga_list' %}" class="btn btn-outline-light">↩ Kembali</a>
+        </div>
+    </form>
+
+</div>
+{% endblock %}
