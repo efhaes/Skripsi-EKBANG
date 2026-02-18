@@ -95,18 +95,18 @@
         <p>
             Anda yakin ingin menghapus desa
             <span id="namaDesa" class="text-danger"></span>?
-            <br>
-            <small>Tindakan ini tidak dapat dibatalkan.</small>
+
         </p>
 
         <form method="post" id="formHapus">
             {% csrf_token %}
             <div class="modal-actions">
-                <button type="button" class="btn-modern" onclick="closeModal()">
-                    Batal
-                </button>
+                
                 <button type="submit" class="btn-modern btn-delete-modern">
                     Ya, Hapus
+                </button>
+                <button type="button" class="btn-modern" onclick="closeModal()">
+                    Batal
                 </button>
             </div>
         </form>

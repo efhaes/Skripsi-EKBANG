@@ -9,7 +9,13 @@
 {% block content %}
 <div class="form-wrapper">
 
-    <h4 class="form-title">Form Data Warga {{ request.user.username }}</h4>
+    <h4 class="form-title">
+    {% if form.instance.pk %}
+        Form Edit Data Warga - {{ form.instance.nama }}
+    {% else %}
+       Form Tambah Data Warga
+    {% endif %}
+</h4>
 
     <div class="alert alert-warning small">
     <strong>Tujuan Pengisian Data</strong><br>
@@ -20,6 +26,18 @@
 
     <form method="post">
         {% csrf_token %}
+        {% if form.errors %}
+<div class="alert alert-danger">
+    <strong>Data belum valid:</strong>
+    <ul class="mb-0">
+        {% for field in form %}
+            {% for error in field.errors %}
+                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
 
         <!-- DATA UTAMA -->
         <div class="row">
@@ -27,10 +45,13 @@
                 <label>NIK</label>
                 {{ form.nik }}
             </div>
-
             <div class="col-md-6 mb-3">
                 <label>Nama Lengkap</label>
                 {{ form.nama }}
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>Jumlah Keluarga KPM</label>
+                {{ form.jumlah_keluarga_kpm }}
             </div>
         </div>
 

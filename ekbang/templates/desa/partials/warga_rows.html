@@ -1,0 +1,18 @@
+{% for w in warga %}
+<tr>
+    <td>{{ forloop.counter }}</td>
+    <td>{{ w.nik }}</td>
+    <td>{{ w.nama }}</td>
+    <td>{{ w.alamat }}</td>
+    <td class="action">
+        <a href="{% url 'desa_warga_edit' w.id %}" class="btn-icon edit">✏️</a>
+        <a href="{% url 'desa_warga_hapus' w.id %}"
+           class="btn-icon delete"
+           onclick="return confirm('Yakin hapus data ini?')">🗑</a>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="5" class="text-center">Data tidak ditemukan</td>
+</tr>
+{% endfor %}

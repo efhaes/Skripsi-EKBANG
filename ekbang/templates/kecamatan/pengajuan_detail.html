@@ -1,10 +1,7 @@
 {% extends 'base/base_kec.html' %}
-
 {% load static %}
 {% load humanize %}
-
 {% block title %}Detail Pengajuan BLT{% endblock %}
-
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/kecamatan/pengajuan_detail.css' %}">
 {% endblock %}
@@ -38,9 +35,14 @@
                 <td>{{ pengajuan.desa.nama_desa }}</td>
             </tr>
             <tr>
+                <th>No SK</th>
+                <td>{{ pengajuan.noSK }}</td>
+            </tr>
+            <tr>
                 <th>Tahun</th>
                 <td>{{ pengajuan.tahun }}</td>
             </tr>
+            
             <tr>
                 <th>Tahap</th>
                 <td>{{ pengajuan.tahap }}</td>
@@ -52,6 +54,10 @@
             <tr>
                 <th>Jumlah Dana</th>
                 <td>Rp {{ pengajuan.jumlah_dana|intcomma }}</td>
+            </tr>
+            <tr>
+                <th>Perbulan</th>
+                <td>Rp {{ pengajuan.perbulan|intcomma }}</td>
             </tr>
             <tr>
                 <th>Status</th>
@@ -72,12 +78,27 @@
                         (berdasarkan metode perhitungan SAW)
                     </small>
                 </th>
+
                 <td>
                     <a href="{{ pengajuan.file_hasil_saw.url }}" class="btn-download" target="_blank">
                         Download Dokumen
                     </a>
                     <small style="display: block; color: rgba(255,255,255,0.6); margin-top: 0.5rem;">
                         Berisi daftar calon penerima yang telah diseleksi
+                    </small>
+                </td>
+                
+            </tr>
+            <tr>
+                <th>
+                    Dokumen SK
+                </th>
+                <td>
+                    <a href="{{ pengajuan.fileSK.url }}" class="btn-download" target="_blank">
+                        Download Dokumen SK
+                    </a>
+                    <small style="display: block; color: rgba(255,255,255,0.6); margin-top: 0.5rem;">
+                        Berisi Dokumen SK
                     </small>
                 </td>
             </tr>

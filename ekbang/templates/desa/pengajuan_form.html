@@ -1,87 +1,151 @@
-{% extends 'base/base.html' %}
-{% load widget_tweaks %}
-{% load static%}
-{% block title %}Pengajuan BLT{% endblock %}
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/desa/pengajuan_form.css' %}">{% endblock %}
-{% block content %}
- <section class="hero-v1">
-  <section class="hero-v2">
-            <div class="content-container">
+    {% extends 'base/base.html' %}
+    {% load widget_tweaks %}
+    {% load static%}
+    {% block title %}Pengajuan BLT{% endblock %}
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/desa/pengajuan_form.css' %}">{% endblock %}
+    {% block content %}
+    <section class="hero-v1">
+    <section class="hero-v2">
+                <div class="content-container">
                 <div class="text-content">
-                    <h1>Pengajuan Form BLT Kepada Kecamatan</h1>
-                    <p class="highlight">Isi form berikut dengan data yang benar agar proses pengajuan lebih cepat dan lancar. Dapatkan bantuan yang tepat sasaran.</p>
-                    
-                    <ul class="feature-list">
-                        <li>Proses pengajuan yang sederhana</li>
-                        <li>Persetujuan cepat dan transparan</li>
-                        <li>Bantuan tepat sasaran</li>
-                        <li>Pendampingan sampai selesai</li>
-                    </ul>
-                </div>
-                
-                <div class="visual-content">
-                    <div class="visual-card">
-                        <h3 style="color: #72A8E8; margin-bottom: 15px;">Langkah Pengajuan</h3>
-                        <p style="color: #E0E0E0; margin-bottom: 20px;">Ikuti langkah-langkah berikut untuk pengajuan yang sukses:</p>
+                    {% if form.instance.pk %}
+                        <h1>Edit Pengajuan Form BLT Desa {{ request.user.username }}</h1>
+                        <p class="highlight">
+                            Perbarui data pengajuan dengan informasi yang benar sebelum proses verifikasi dilanjutkan oleh pihak kecamatan.
+                        </p>
                         
-                        <div class="card-icon-row">
-                            <div class="card-icon">
-                                <div class="icon">📝</div>
-                                <div class="icon-label">Isi Form</div>
-                            </div>
-                            <div class="card-icon">
-                                <div class="icon">📤</div>
-                                <div class="icon-label">Ajukan</div>
-                            </div>
-                            <div class="card-icon">
-                                <div class="icon">⏱️</div>
-                                <div class="icon-label">Tunggu</div>
-                            </div>
-                            <div class="card-icon">
-                                <div class="icon">✅</div>
-                                <div class="icon-label">Selesai</div>
+                        <ul class="feature-list">
+                            <li>Pastikan data sudah sesuai</li>
+                            <li>Periksa kembali kelengkapan dokumen</li>
+                            <li>Perubahan akan tersimpan setelah diperbarui</li>
+                        </ul>
+
+                    {% else %}
+                        <h1>Pengajuan Form BLT Desa {{ request.user.username }}   Kepada Kecamatan </h1>
+                        <p class="highlight">
+                            Isi form berikut dengan data yang benar agar proses pengajuan lebih cepat dan lancar.
+                        </p>
+                        
+                        <ul class="feature-list">
+                            <li>Proses pengajuan yang sederhana</li>
+                            <li>Verifikasi transparan oleh kecamatan</li>
+                            <li>Bantuan tepat sasaran</li>
+                            <li>Pemantauan status pengajuan</li>
+                        </ul>
+                    {% endif %}
+
+                </div>
+
+                    
+                    <div class="visual-content">
+                        <div class="visual-card">
+                            <h3 style="color: #72A8E8; margin-bottom: 15px;">Langkah Pengajuan</h3>
+                            <p style="color: #E0E0E0; margin-bottom: 20px;">Ikuti langkah-langkah berikut untuk pengajuan yang sukses:</p>
+                            
+                            <div class="card-icon-row">
+                                <div class="card-icon">
+                                    <div class="icon">📝</div>
+                                    <div class="icon-label">Isi Form</div>
+                                </div>
+                                <div class="card-icon">
+                                    <div class="icon">📤</div>
+                                    <div class="icon-label">Ajukan</div>
+                                </div>
+                                <div class="card-icon">
+                                    <div class="icon">⏱️</div>
+                                    <div class="icon-label">Tunggu</div>
+                                </div>
+                                <div class="card-icon">
+                                    <div class="icon">✅</div>
+                                    <div class="icon-label">Selesai</div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </section>
+
+
+    <div class="glass-card form-card">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-row">
+
+            <div class="form-group sk-field">
+                <label>Nomor SK</label>
+                {{ form.noSK|add_class:"form-control" }}
             </div>
-        </section>
 
+            <div class="form-group sk-field">
+                <label>File SK</label>
 
-<div class="glass-card form-card">
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
+                <input type="file" name="fileSK" class="form-control">
+
+                {% if form.instance.fileSK %}
+                    <div class="current-file">
+                        File saat ini:
+                        <a href="{{ form.instance.fileSK.url }}" target="_blank">
+                            {{ form.instance.fileSK.name }}
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
 
         <div class="form-group">
-            <label>File Hasil Seleksi Penerima  </label>
-            {{ form.file_hasil_saw|add_class:"form-control" }}
+            <label>File Hasil Seleksi Penerima</label>
+
+            {% if form.instance.file_hasil_saw %}
+                <div class="mb-2">
+                     <div class="current-file">File saat ini:
+                    <a href="{{ form.instance.file_hasil_saw.url }}" target="_blank">
+                        {{ form.instance.file_hasil_saw.name|cut:"saw/" }}
+                    </a>
+                </div>
+            {% endif %}
+
+            <input type="file" name="file_hasil_saw" class="form-control">
         </div>
 
-        <div class="form-row">
-            <div class="form-group col-md-4">
-                <label>Jumlah Dana</label>
-                {{ form.jumlah_dana|add_class:"form-control" }}
-            </div>
-            <div class="form-group col-md-4">
-                <label>Jumlah KPM</label>
-                {{ form.jumlah_kpm|add_class:"form-control" }}
-            </div>
-            <div class="form-group col-md-4">
-                <label>Tahap</label>
-                {{ form.tahap|add_class:"form-control" }}
-            </div>
-        </div>
+            <!-- BARIS 1 -->
+            <div class="form-row">
+                <div class="form-group sk-field">
+                    <label>Jumlah Dana</label>
+                    {{ form.jumlah_dana|add_class:"form-control" }}
+                </div>
 
-        <div class="form-group">
-            <label>Tahun</label>
-            {{ form.tahun|add_class:"form-control" }}
-        </div>
+                <div class="form-group sk-field">
+                    <label>Jumlah Perbulan</label>
+                    {{ form.perbulan|add_class:"form-control" }}
+                </div>
+            </div>
 
-        <div class="form-actions">
-            <button type="submit" class="btn-glass">Kirim Pengajuan</button>
-            <a href="{% url 'desa_dashboard' %}" class="btn-glass cancel">Batal</a>
-        </div>
-    </form>
-</div>
-{% endblock %}
+            <!-- BARIS 2 -->
+            <div class="form-row">
+                <div class="form-group sk-field">
+                    <label>Jumlah KPM</label>
+                    {{ form.jumlah_kpm|add_class:"form-control" }}
+                </div>
+
+                <div class="form-group sk-field">
+                    <label>Tahap</label>
+                    {{ form.tahap|add_class:"form-control" }}
+                </div>
+            </div>
+
+            <!-- TAHUN SENDIRI -->
+            <div class="form-group">
+                <label>Tahun</label>
+                {{ form.tahun|add_class:"form-control" }}
+            </div>
+
+
+            <div class="form-actions">
+                <button type="submit" class="btn-glass">Kirim Pengajuan</button>
+                <a href="{% url 'desa_pengajuan_list' %}" class="btn-glass cancel">Batal</a>
+            </div>
+        </form>
+    </div>
+    {% endblock %}

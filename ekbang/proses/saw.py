@@ -13,7 +13,7 @@ KRITERIA = {
     'desil_p3ke': 'cost',
     'kehilangan_pekerjaan': 'benefit',
     'sakit_kronis': 'benefit',
-    'tidak_pkh': 'cost',
+    'tidak_pkh': 'benefit',
     'lansia_tunggal': 'benefit',
     'perempuan_kepala': 'benefit',
 }
@@ -48,7 +48,6 @@ def hitung_saw(desa):
 
     min_val = {
         'desil_p3ke': min(w.desil_p3ke for w in warga_list),
-        'tidak_pkh': min(w.tidak_pkh for w in warga_list),
     }
 
     # =========================

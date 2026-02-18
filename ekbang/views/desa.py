@@ -4,12 +4,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from ekbang.proses.decorators import role_required
-
+from django.db.models import Q
 from ekbang.models import Desa, Warga, HasilSAW, PengajuanBLT,NormalisasiSAW
 from ekbang.proses.saw import hitung_saw
 from ekbang.forms import WargaForm, PengajuanBLTForm
 from django.http import HttpResponse
 from openpyxl import Workbook
+from django.template.loader import render_to_string
+from django.http import JsonResponse
+
 @login_required
 @role_required('desa')
 def dashboard_desa(request):
@@ -27,12 +30,34 @@ def dashboard_desa(request):
         }
     return render(request, 'desa/dashboard.html', context)
 
+
 @login_required
 @role_required('desa')
 def warga_list(request):
     desa = request.user.desa
+    query = request.GET.get('q', '')
+
     warga = Warga.objects.filter(desa=desa)
-    return render(request, 'desa/warga_list.html', {'warga': warga})
+
+    if query:
+        warga = warga.filter(
+            Q(nama__icontains=query) |
+            Q(nik__icontains=query)
+        )
+
+    # Jika request AJAX → kirim hanya rows table
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html = render_to_string(
+            'desa/partials/warga_rows.html',
+            {'warga': warga}
+        )
+        return JsonResponse({'html': html})
+
+    return render(request, 'desa/warga_list.html', {
+        'warga': warga,
+        'query': query
+    })
+
 
 @login_required
 @role_required('desa')
@@ -47,7 +72,7 @@ def warga_tambah(request):
         messages.success(request, 'Data warga berhasil ditambahkan')
         return redirect('desa_warga_list')
 
-    return render(request, 'desa/warga_form.html', {'form': form})
+    return render(request, 'desa/warga_form.html', {'form': form, 'mode': 'tambah'})
 
 
 @login_required
@@ -62,7 +87,11 @@ def warga_edit(request, id):
         messages.success(request, 'Data warga berhasil diupdate')
         return redirect('desa_warga_list')
 
-    return render(request, 'desa/warga_form.html', {'form': form})
+    return render(request, 'desa/warga_form.html', {
+        'form': form, 
+        'mode': 'edit',
+        'warga': warga
+        })
 
 
 @login_required
@@ -158,7 +187,7 @@ def pengajuan_blt_edit(request, id):
         messages.success(request, 'Pengajuan BLT berhasil diperbarui')
         return redirect('desa_pengajuan_list')
 
-    return render(request, 'desa/pengajuan_form.html', {'form': form})
+    return render(request, 'desa/pengajuan_form.html', {'form': form })
 
 
 from openpyxl import Workbook

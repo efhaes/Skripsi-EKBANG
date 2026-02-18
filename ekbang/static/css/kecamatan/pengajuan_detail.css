@@ -215,9 +215,21 @@
    FORM VALIDASI
 ================================ */
 .form-group {
-    margin-bottom: 1.5rem;
+    position: relative;
 }
 
+.form-group select {
+    background-image: linear-gradient(45deg, transparent 50%, white 50%),
+                      linear-gradient(135deg, white 50%, transparent 50%);
+    background-position: calc(100% - 20px) calc(50% - 3px),
+                         calc(100% - 14px) calc(50% - 3px);
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
+}
+.form-control-custom option {
+    background: rgba(15, 23, 42, 0.98);
+    color: white;
+}
 .form-label {
     display: block;
     color: rgba(255, 255, 255, 0.85);
@@ -227,26 +239,37 @@
 
 .form-control-custom {
     width: 100%;
-    padding: 0.875rem 1rem;
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    color: #fff;
+    padding: 0.9rem 1.1rem;
+
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    border-radius: 18px;          /* 🔥 ini kunci anti-kaku */
+    color: white;
     font-size: 0.95rem;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
+
+    backdrop-filter: blur(14px);
+    transition: all 60.s ease;
+
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    cursor: pointer;
 }
 
+/* Hover effect biar hidup */
+.form-control-custom:hover {
+    background: rgba(255, 255, 255, 0.09);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+}
+
+/* Focus glow modern */
 .form-control-custom:focus {
     outline: none;
-    border-color: rgba(109, 40, 217, 0.5);
+    border-color: rgba(109, 40, 217, 0.7);
     box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.15);
-    background: rgba(255, 255, 255, 0.09);
-}
-
-.form-control-custom:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
 }
 
 /* ================================

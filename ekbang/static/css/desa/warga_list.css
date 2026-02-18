@@ -16,6 +16,50 @@
     font-size: 14px;
     color: #B0B0B0;
 }
+.card-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 14px;
+}
+
+/* SEARCH GLASS STYLE */
+.search-box {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 4px;
+    backdrop-filter: blur(8px);
+}
+
+.search-box input {
+    border: none;
+    background: transparent;
+    padding: 8px 10px;
+    color: white;
+    width: 210px;
+    outline: none;
+    font-size: 0.9rem;
+}
+
+.search-box input::placeholder {
+    color: rgba(255,255,255,0.45);
+}
+
+.search-box button {
+    border: none;
+    background: rgba(0, 255, 255, 0.25);
+    border-radius: 9px;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.search-box button:hover {
+    transform: scale(1.05);
+    background: rgba(0, 255, 255, 0.4);
+}
 
 /* ===== BUTTONS ===== */
 .btn-glass {

@@ -144,6 +144,43 @@
     flex-direction: column;
 }
 
+.form-row {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: flex-start;   /* INI KRUSIAL */
+}
+
+.file-placeholder {
+    height: 38px;   /* samakan dengan tinggi "Saat ini" */
+}
+.sk-field {
+    flex: 1;
+    min-width: 260px;
+}
+
+
+.current-file {
+    font-size: 13px;
+    margin-bottom: 8px;
+    opacity: 0.85;
+    color: rgba(255,255,255,0.8);
+}
+
+.current-file a {
+    color: #72A8E8;
+    text-decoration: none;
+}
+
+.current-file a:hover {
+    text-decoration: underline;
+}
+
+input[type="file"].form-control {
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
 .form-group label {
     margin-bottom: 8px;
     color: #E0E0E0;
@@ -178,12 +215,6 @@
     color: #fff;
 }
 
-/* ===== FORM ROW ===== */
-.form-row {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-}
 
 /* ===== BUTTONS ===== */
 .btn-glass {

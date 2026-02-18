@@ -1,5 +1,9 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.core.validators import RegexValidator
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
+import datetime
 
 class Profile(models.Model):
     ROLE_CHOICES = (
@@ -12,6 +16,9 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"
+
+
+
 class Desa(models.Model):
     user = models.OneToOneField(
         User,
@@ -34,6 +41,15 @@ class Desa(models.Model):
     def __str__(self):
         return self.nama_desa
 
+nik_validator = RegexValidator(
+    regex=r'^\d{16}$',
+    message='NIK harus terdiri dari 16 digit angka.'
+)
+
+kk_validator = RegexValidator(
+    regex=r'^\d{16}$',
+    message='No KK harus terdiri dari 16 digit angka.'
+)
 
 class Warga(models.Model):
     desa = models.ForeignKey(
@@ -42,8 +58,15 @@ class Warga(models.Model):
         related_name='warga'
     )
 
-    nik = models.CharField(max_length=20, unique=True)
+    nik = models.CharField(
+        max_length=16,
+        unique=True,
+        validators=[nik_validator],
+        verbose_name="NIK"
+    )
+
     nama = models.CharField(max_length=100)
+    jumlah_keluarga_kpm = models.IntegerField(max_length=100) 
     alamat = models.TextField()
 
     # Kriteria SAW BLT
@@ -65,9 +88,43 @@ class Warga(models.Model):
     perempuan_kepala = models.IntegerField(
         help_text="1 = tidak, 5 = ya"
     )
+    def clean(self):
+        try:
+            tanggal = int(self.nik[6:8])
+            bulan = int(self.nik[8:10])
+            tahun = int(self.nik[10:12])
+
+            # Jika perempuan → tanggal +40
+            if tanggal > 40:
+                tanggal -= 40
+
+            # Tentukan abad
+            tahun += 1900 if tahun > 30 else 2000
+
+            datetime.date(tahun, bulan, tanggal)
+
+        except Exception:
+            raise ValidationError({
+                'nik': 'Format tanggal lahir dalam NIK tidak valid.'
+            })
+
+    # 🔥 Supaya clean() selalu dijalankan
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.nama} ({self.desa.nama_desa})"
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['nik']),
+
+        ]
+
+    def __str__(self):
+        return f"{self.nama} ({self.desa.nama_desa})"
+    
 
 
 
@@ -95,8 +152,11 @@ class PengajuanBLT(models.Model):
         on_delete=models.CASCADE,
         related_name='pengajuan'
     )
+    noSK = models.CharField ()
+    fileSK = models.FileField(upload_to='SK_BLT/')
     file_hasil_saw = models.FileField(upload_to='saw/')
     jumlah_dana = models.IntegerField()
+    perbulan = models.IntegerField()
     jumlah_kpm = models.IntegerField()
     tahap = models.CharField(max_length=20)
     tahun = models.IntegerField()

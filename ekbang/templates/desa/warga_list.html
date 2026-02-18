@@ -19,6 +19,15 @@
 
 
 <div class="glass-card">
+    <div class="card-toolbar">
+        <form method="get" class="search-box">
+            <input type="text"
+                   name="q"
+                   placeholder="Cari nama / NIK warga..."
+                   value="{{ query|default:'' }}">
+        </form>
+    </div>
+
     <table class="table-modern">
         <thead>
             <tr>
@@ -29,23 +38,38 @@
                 <th>Aksi</th>
             </tr>
         </thead>
-        <tbody>
-            {% for w in warga %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ w.nik }}</td>
-                <td>{{ w.nama }}</td>
-                <td>{{ w.alamat }}</td>
-                <td class="action">
-                    <a href="{% url 'desa_warga_edit' w.id %}" class="btn-icon edit">✏️</a>
-                    <a href="{% url 'desa_warga_hapus' w.id %}"
-                       class="btn-icon delete"
-                       onclick="return confirm('Yakin hapus data ini?')">🗑</a>
-                </td>
-            </tr>
-            {% endfor %}
+       <tbody id="warga-table">
+    {% include 'desa/partials/warga_rows.html' %}
         </tbody>
+
     </table>
 </div>
+{% endblock %}
 
+{% block extra_js %}
+<script>
+const input = document.querySelector('.search-box input');
+const tableBody = document.getElementById('warga-table');
+
+let timer = null;
+
+input.addEventListener('keyup', function() {
+    clearTimeout(timer);
+
+    timer = setTimeout(() => {
+        const query = input.value;
+
+        fetch(`?q=${query}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            tableBody.innerHTML = data.html;
+        });
+
+    }, 300); // delay biar ga spam request
+});
+</script>
 {% endblock %}

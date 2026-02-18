@@ -16,6 +16,7 @@ class WargaForm(forms.ModelForm):
         fields = [
             'nik',
             'nama',
+            'jumlah_keluarga_kpm',
             'alamat',
             'desil_p3ke',
             'kehilangan_pekerjaan',
@@ -61,6 +62,29 @@ class WargaForm(forms.ModelForm):
                 (5, 'Perempuan kepala keluarga')
             ]),
         }
+def clean_nik(self):
+    nik = self.cleaned_data.get('nik')
+
+    if nik and not nik.isdigit():
+        raise forms.ValidationError("NIK hanya boleh berisi angka (0-9).")
+
+    return nik
+
+class Meta:
+    model = Warga
+    fields = [...]
+    labels = {
+        'nik': 'NIK'
+    }
+    error_messages = {
+        'nik': {
+            'required': 'NIK wajib diisi.',
+            'unique': 'NIK sudah terdaftar di sistem.',
+            'invalid': 'NIK harus terdiri dari 16 digit angka.',
+            'max_length': 'NIK harus terdiri dari 16 digit.',
+            'min_length': 'NIK harus terdiri dari 16 digit.',
+        }
+    }
 
 
 
@@ -68,8 +92,11 @@ class PengajuanBLTForm(forms.ModelForm):
     class Meta:
         model = PengajuanBLT
         fields = [
+            'noSK',
+            'fileSK',
             'file_hasil_saw',
             'jumlah_dana',
+            'perbulan',
             'jumlah_kpm',
             'tahap',
             'tahun',
