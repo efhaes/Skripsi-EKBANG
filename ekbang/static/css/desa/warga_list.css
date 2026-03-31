@@ -1,4 +1,3 @@
-/* ===== PAGE HEADER ===== */
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -60,6 +59,7 @@
     transform: scale(1.05);
     background: rgba(0, 255, 255, 0.4);
 }
+
 
 /* ===== BUTTONS ===== */
 .btn-glass {
@@ -146,7 +146,7 @@
 }
 
 
-/* Modal */
+/* Overlay di belakang modal */
 .modal {
     display: none; 
     position: fixed; 
@@ -154,36 +154,128 @@
     left: 0;
     top: 0;
     width: 100%; 
-    height: 100%;
-    overflow: auto; 
-    background-color: rgba(0,0,0,0.5);
+    height: 100%; 
+    background-color: rgba(0, 0, 0, 0.4); /* Gelapnya dikit aja */
+    backdrop-filter: blur(8px); /* Efek blur background */
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
 }
 
-.modal-content {
-    background-color: #1f2937;
-    margin: 15% auto;
-    padding: 20px;
-    border-radius: 12px;
-    width: 400px;
-    color: #fff;
+/* Box Modal Utama */
+.glass-modal {
+    background: rgba(30, 41, 59, 0.8) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px; /* Sudut lebih tegas dikit */
+    margin: 20vh auto; /* Turun dikit dari atas */
+    width: 85%;
+    max-width: 340px; /* Gue kecilin dari 420px ke 340px */
+    padding: 1.5rem; /* Padding lebih irit */
     text-align: center;
+    color: white;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+    animation: modalBounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.modal-actions {
-    margin-top: 20px;
+@keyframes modalBounce {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Bagian Header Modal */
+.warning-icon {
+    font-size: 2.5rem;
+    color: #ef4444; /* Merah cerah */
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.4));
+}
+
+.glass-modal h3 {
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.5px;
+}
+
+/* Bagian Body Modal */
+.modal-body p {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+}
+
+.modal-body strong {
+    color: #f87171; /* Warna highlight data (Tahap/Tahun) */
+    background: rgba(239, 68, 68, 0.1);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.sub-text {
+    display: block;
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* Bagian Tombol (Footer) */
+.modal-footer {
     display: flex;
-    justify-content: space-around;
+    gap: 12px;
+    margin-top: 2rem;
 }
 
-.modal .btn-glass.delete {
-    background-color: #ef4444;
-    color: #fff;
+/* Tombol Batal */
+.btn-secondary {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 0.8rem;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: 0.3s ease;
 }
 
-.modal .close {
-    float: right;
-    font-size: 24px;
-    cursor: pointer;
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Tombol Hapus */
+.btn-danger-glass {
+    flex: 1;
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    color: white;
+    padding: 0.6rem;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 10px 20px -5px rgba(239, 68, 68, 0.4);
+    transition: 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-danger-glass:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 25px -5px rgba(239, 68, 68, 0.5);
+    color: white;
+}
+
+/* Responsive buat HP */
+@media (max-width: 480px) {
+    .glass-modal {
+        padding: 1.5rem;
+        margin: 20vh auto;
+    }
+    
+    .modal-footer {
+        flex-direction: column-reverse; /* Hapus jadi di atas, Batal di bawah */
+    }
 }
 
 /* ===== RESPONSIVE ===== */
@@ -194,5 +286,54 @@
     }
     .btn-glass {
         margin-top: 10px;
+    }
+
+    /* Sembunyikan header asli tabel */
+    .table-modern thead {
+        display: none;
+    }
+
+    .table-modern, 
+    .table-modern tbody, 
+    .table-modern tr, 
+    .table-modern td {
+        display: block;
+        width: 100%;
+    }
+
+    .table-modern tr {
+        margin-bottom: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.03);
+        padding: 10px;
+    }
+
+    .table-modern td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Memunculkan label dari atribut data-label */
+    .table-modern td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        width: 45%;
+        text-align: left;
+        font-weight: 600;
+        color: #72A8E8; /* Warna biru sesuai tema kamu */
+    }
+
+    .table-modern td:last-child {
+        border-bottom: none;
+        text-align: center;
+        padding-left: 15px;
+    }
+
+    .table-modern td:last-child::before {
+        display: none; /* Hilangkan label 'Aksi' agar tombol ke tengah */
     }
 }

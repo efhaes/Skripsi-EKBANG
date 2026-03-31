@@ -276,3 +276,64 @@
         font-size: 1.1rem;
     }
 }
+
+/* ================================
+   HERO & GAUGE RESPONSIVE
+================================ */
+.dashboard-hero {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    overflow: hidden; /* Biar glow ga bocor */
+}
+
+/* Biar Chart nggak kegedean di layar tanggung */
+.hero-gauge {
+    min-width: 250px; 
+}
+
+@media (max-width: 991px) {
+    .hero-gauge {
+        min-width: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-hero {
+        flex-direction: column;
+        text-align: center;
+        padding: 2rem 1.5rem;
+    }
+
+    .hero-text {
+        margin-bottom: 1.5rem;
+    }
+
+    .dashboard-hero-title {
+        font-size: 1.6rem;
+    }
+
+    .dashboard-hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .hero-gauge {
+        width: 100%;
+        max-width: 280px;
+        margin: 0 auto;
+    }
+}
+
+/* Perbaikan untuk Action Cards agar tidak kaku di mobile */
+@media (max-width: 991px) {
+    .action-card {
+        padding: 1.5rem;
+    }
+}
+
+/* Tabel di Mobile biar bisa di-scroll tanpa ngerusak layout */
+.table-responsive {
+    border-radius: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}

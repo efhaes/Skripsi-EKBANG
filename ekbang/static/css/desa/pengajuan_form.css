@@ -246,12 +246,106 @@ input[type="file"].form-control {
 }
 
 /* ===== RESPONSIVE ===== */
+/* ===== MOBILE-FIRST RESPONSIVE UPDATE ===== */
 @media (max-width: 768px) {
-    .form-row {
-        flex-direction: column;
+    /* 1. Hero Section: Tumpuk Vertikal */
+    .hero-v2 {
+        padding: 25px 15px;
+        margin-bottom: 25px;
+        text-align: center;
     }
+
+    .hero-v2 .content-container {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .hero-v2 h1 {
+        font-size: 28px; /* Lebih kecil agar tidak makan tempat */
+    }
+
+    .hero-v2 .highlight {
+        font-size: 15px;
+        margin-bottom: 20px;
+    }
+
+    /* List Feature: Rata kiri tetap rapi */
+    .hero-v2 .feature-list li {
+        font-size: 14px;
+        justify-content: center;
+    }
+
+    /* 2. Visual Card: Rampingkan icon langkah-langkah */
+    .visual-card {
+        padding: 20px 15px;
+    }
+
+    .card-icon-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* 2x2 layout di HP */
+        gap: 15px;
+    }
+
+    .card-icon .icon {
+        font-size: 24px;
+    }
+
+    /* 3. Form Card: Kurangi padding agar input lebih luas */
+    .form-card {
+        padding: 20px 15px;
+        margin: 0 10px 30px 10px; /* Kasih jarak dari tepi layar */
+    }
+
+    .form-row {
+        flex-direction: column; /* Pastikan semua baris jadi 1 kolom */
+        gap: 0;
+    }
+
+    .sk-field {
+        width: 100%;
+        min-width: unset;
+    }
+
+    /* 4. Form Controls: Perbesar area sentuh (Touch Target) */
+    .form-control {
+        font-size: 16px; /* Mencegah auto-zoom di iOS Safari */
+        padding: 12px;
+    }
+
+    .current-file {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 8px;
+        border-radius: 8px;
+        word-break: break-all; /* Agar nama file panjang tidak tembus container */
+    }
+
+    /* 5. Buttons: Full width & tumpuk */
+    .form-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
     .btn-glass {
         width: 100%;
-        margin-bottom: 10px;
+        margin-right: 0;
+        text-align: center;
+        padding: 14px;
+        font-size: 16px;
+    }
+
+    .btn-glass.cancel {
+        order: 2; /* Taruh tombol batal di bawah tombol kirim */
+    }
+}
+
+/* Optimasi untuk layar sangat kecil (iPhone SE / Fold) */
+@media (max-width: 380px) {
+    .hero-v2 h1 {
+        font-size: 22px;
+    }
+    
+    .card-icon-row {
+        grid-template-columns: 1fr; /* Tumpuk 1 kolom saja */
     }
 }

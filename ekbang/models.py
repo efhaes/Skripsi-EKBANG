@@ -18,7 +18,6 @@ class Profile(models.Model):
         return f"{self.user.username} - {self.role}"
 
 
-
 class Desa(models.Model):
     user = models.OneToOneField(
         User,
@@ -66,7 +65,7 @@ class Warga(models.Model):
     )
 
     nama = models.CharField(max_length=100)
-    jumlah_keluarga_kpm = models.IntegerField(max_length=100) 
+    jumlah_keluarga_kpm = models.IntegerField()
     alamat = models.TextField()
 
     # Kriteria SAW BLT
@@ -126,8 +125,6 @@ class Warga(models.Model):
         return f"{self.nama} ({self.desa.nama_desa})"
     
 
-
-
 class HasilSAW(models.Model):
     desa = models.ForeignKey(
         Desa,
@@ -142,9 +139,6 @@ class HasilSAW(models.Model):
     def __str__(self):
         return f"{self.warga.nama} - {self.desa.nama_desa} - Rank {self.ranking}"
 
-
-
-from django.contrib.auth.models import User
 
 class PengajuanBLT(models.Model):
     desa = models.ForeignKey(
@@ -184,7 +178,6 @@ class PengajuanBLT(models.Model):
     tanggal_validasi = models.DateTimeField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
-
 
 
 class NormalisasiSAW(models.Model):

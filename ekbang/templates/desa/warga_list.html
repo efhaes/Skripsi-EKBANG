@@ -12,9 +12,15 @@
         <p>Daftar penduduk terdaftar dalam sistem</p>
     </div>
 
-    <a href="{% url 'desa_warga_tambah' %}" class="btn-glass">
-        ➕ Tambah Warga
-    </a>
+   <a href="{% url 'desa_warga_tambah' %}" class="btn-glass btn-tambah">
+    <div class="btn-content">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>Tambah Warga</span>
+    </div>
+</a>
 </div>
 
 
@@ -44,6 +50,23 @@
 
     </table>
 </div>
+
+<div id="deleteModal" class="modal">
+    <div class="glass-modal">
+        <div class="warning-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+        </div>
+        <h3>Hapus Data Warga?</h3>
+        <div class="modal-body">
+            <p>Apakah Anda yakin ingin menghapus data <strong><span id="namaWargaHapus"></span></strong>?</p>
+            <p class="sub-text">Tindakan ini tidak dapat dibatalkan.</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" onclick="closeModal()" class="btn-secondary">Batal</button>
+            <a href="#" id="linkHapusFix" class="btn-danger-glass">Ya, Hapus</a>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
@@ -71,5 +94,31 @@ input.addEventListener('keyup', function() {
 
     }, 300); // delay biar ga spam request
 });
+
+
+    const modal = document.getElementById('deleteModal');
+    const namaSpan = document.getElementById('namaWargaHapus');
+    const linkHapus = document.getElementById('linkHapusFix');
+
+    function openDeleteModal(nama, url) {
+        // Isi nama warga ke dalam modal
+        namaSpan.innerText = nama;
+        // Set link href ke URL hapus Django
+        linkHapus.setAttribute('href', url);
+        // Munculkan modal
+        modal.style.display = 'block';
+    }
+
+    function closeModal() {
+        modal.style.display = 'none';
+    }
+
+    // Klik di luar box modal untuk tutup
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
 </script>
 {% endblock %}
