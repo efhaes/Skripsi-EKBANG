@@ -280,6 +280,7 @@
 
 /* ===== RESPONSIVE ===== */
 /* ===== MOBILE CARD VIEW ===== */
+
 @media (max-width: 768px) {
     .page-header {
         flex-direction: column;
@@ -288,4 +289,83 @@
     .btn-glass {
         margin-top: 10px;
     }
+
+    /* Sembunyikan tabel biasa */
+    .table-modern {
+        display: none;
+    }
+
+    /* Tampilkan card list */
+    .warga-card-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+
+/* Sembunyikan card list di desktop */
+@media (min-width: 769px) {
+    .warga-card-list {
+        display: none;
+    }
+}
+
+/* Style card warga */
+.warga-card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    padding: 14px 16px;
+    color: #E0E0E0;
+    transition: background 0.2s ease;
+}
+
+.warga-card:hover {
+    background: rgba(114, 136, 232, 0.1);
+}
+
+.warga-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.warga-card-nama {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.warga-card-no {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.4);
+}
+
+.warga-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.85rem;
+    color: #B0B0B0;
+}
+
+.warga-card-body span {
+    display: flex;
+    gap: 6px;
+}
+
+.warga-card-body .label {
+    color: #72A8E8;
+    min-width: 50px;
+    font-weight: 500;
+}
+
+.warga-card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.08);
 }
