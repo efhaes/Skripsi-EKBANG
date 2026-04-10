@@ -4,6 +4,7 @@
 {% block title %}Dashboard Desa{% endblock %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="{% static 'css/desa/dashboard.css' %}">
 <style>
 /* Optional: Tambahkan hero section jika perlu */
@@ -34,121 +35,162 @@
 {% block content %}
 <div class="dashboard-wrapper">
     
-    <!-- Optional Hero Section -->
-    <div class="dashboard-hero">
-        <h1 class="dashboard-hero-title">Selamat Datang di Dashboard EKBANG Desa {{ request.user.username }}</h1>
-        <p class="dashboard-hero-subtitle">
-            Kelola data warga, proses perhitungan SAW, dan ajukan BLT dengan mudah
-        </p>
-    </div>
-
-    <!-- STAT CARDS -->
-    <div class="row g-4 mt-4">
-        <div class="col-md-3">
-            <div class="stat-card">
-                <div class="stat-icon bg-cyan">👥</div>
-                <div>
-                    <h4>{{ total_warga }}</h4>
-                    <span>Total Warga</span>
-                </div>
-            </div>
+    <div class="dashboard-hero d-flex justify-content-between align-items-center flex-wrap">
+        <div class="hero-text col-md-7">
+            <h1 class="dashboard-hero-title">Selamat Datang, Desa {{ request.user.username }}</h1>
+            <p class="dashboard-hero-subtitle">
+                Sistem EKBANG: Kelola data warga, perhitungan SAW, dan pengajuan BLT dalam satu dashboard terintegrasi.
+            </p>
         </div>
-
-        <div class="col-md-3">
-            <div class="stat-card">
-                <div class="stat-icon bg-emerald">📊</div>
-                <div>
-                    <h4>{{ total_hasil }}</h4>
-                    <span>Hasil SAW</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="stat-card">
-                <div class="stat-icon bg-warning">📨</div>
-                <div>
-                    <h4>{{ total_pengajuan }}</h4>
-                    <span>Pengajuan BLT</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="stat-card">
-                <div class="stat-icon bg-danger">⏳</div>
-                <div>
-                    <h4>{{ pengajuan_pending }}</h4>
-                    <span>Verifikasi</span>
+        
+        <div class="hero-gauge col-md-4 text-center">
+            <div class="chart-container" style="position: relative; height: 160px; width: 100%;">
+                <canvas id="gaugeWarga"></canvas>
+                <div style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);">
+                    <h2 class="mb-0" style="font-weight: 800; color: #fff; font-size: 2rem;">{{ total_warga }}</h2>
+                    <p class="text-muted small" style="font-size: 10px; text-transform: uppercase; letter-spacing: 1px;">Total Populasi</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <hr class="divider">
-
-    <!-- QUICK ACTION -->
-    <div class="row g-3">
-        <div class="col-md-4">
-            <a href="{% url 'desa_warga_list' %}" class="action-card accent">
-                <h5>Kelola Data Warga</h5>
-                <p>Tambah & edit data warga</p>
-            </a>
+    <div class="row g-4 mt-2">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon bg-emerald">
+                <i class="fa-solid fa-chart-simple" style="color: #10b981;"></i>
+            </div>
+            <div>
+                <h4>{{ total_hasil }}</h4>
+                <span>Hasil SAW</span>
+            </div>
         </div>
-
-        <div class="col-md-4">
-            <a href="{% url 'desa_proses_saw' %}" class="action-card">
-                <h5>Proses SAW</h5>
-                <p>Hitung prioritas penerima</p>
-            </a>
-        </div>
-
-        <div class="col-md-4">
-            <a href="{% url 'desa_pengajuan' %}" class="action-card warning">
-                <h5>Pengajuan BLT</h5>
-                <p>Kirim ke kecamatan</p>
-            </a>
-        </div>
-
-       
     </div>
 
-    <hr class="divider">
-
-    <!-- PENGAJUAN TERAKHIR -->
-    <div class="glass-box">
-        <h5>Pengajuan BLT Terakhir</h5>
-        <table class="table table-sm table-borderless mt-3">
-            <thead>
-                <tr>
-                    <th>Tahun</th>
-                    <th>Tahap</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for p in pengajuan %}
-                <tr>
-                    <td>{{ p.tahun }}</td>
-                    <td>{{ p.tahap }}</td>
-                    <td>
-                        {% if p.status == 'pending' %}
-                            <span class="badge" style="background: rgba(245,158,11,0.2); color: #fbbf24;">Pending</span>
-                        {% elif p.status == 'valid' %}
-                            <span class="badge" style="background: rgba(34,197,94,0.2); color: #4ade80;">Valid</span>
-                        {% else %}
-                            <span class="badge" style="background: rgba(239,68,68,0.2); color: #f87171;">Tidak Valid</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="3" class="text-muted">Belum ada pengajuan</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon bg-warning">
+                <i class="fa-solid fa-paper-plane" style="color: #f59e0b;"></i>
+            </div>
+            <div>
+                <h4>{{ total_pengajuan }}</h4>
+                <span>Total Pengajuan</span>
+            </div>
+        </div>
     </div>
 
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon bg-danger">
+                <i class="fa-solid fa-clock-rotate-left" style="color: #ef4444;"></i>
+            </div>
+            <div>
+                <h4>{{ pengajuan_pending }}</h4>
+                <span>Perlu Verifikasi</span>
+            </div>
+        </div>
+    </div>
 </div>
+
+    <hr class="divider">
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+             <div class="d-flex flex-column gap-3">
+                <a href="{% url 'desa_warga_list' %}" class="action-card accent">
+                    <h5>Kelola Data Warga</h5>
+                    <p>Tambah & edit data penduduk</p>
+                </a>
+                <a href="{% url 'desa_proses_saw' %}" class="action-card">
+                    <h5>Proses SAW</h5>
+                    <p>Hitung prioritas penerima</p>
+                </a>
+                <a href="{% url 'desa_pengajuan' %}" class="action-card warning">
+                    <h5>Pengajuan BLT</h5>
+                    <p>Kirim laporan ke kecamatan</p>
+                </a>
+             </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="glass-box" style="height: 100%;">
+                <h5 class="mb-4">Log Pengajuan Terakhir</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm table-borderless">
+                        <thead>
+                            <tr>
+                                <th>Tahun</th>
+                                <th>Tahap</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in pengajuan %}
+                            <tr>
+                                <td>{{ p.tahun }}</td>
+                                <td>{{ p.tahap }}</td>
+                                <td>
+                                    {% if p.status == 'pending' %}
+                                        <span class="badge" style="background: rgba(245,158,11,0.2); color: #fbbf24;">Pending</span>
+                                    {% elif p.status == 'valid' %}
+                                        <span class="badge" style="background: rgba(34,197,94,0.2); color: #4ade80;">Valid</span>
+                                    {% else %}
+                                        <span class="badge" style="background: rgba(239,68,68,0.2); color: #f87171;">Tidak Valid</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="3" class="text-muted text-center">Belum ada data</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctxGauge = document.getElementById('gaugeWarga').getContext('2d');
+
+    // Buat gradien warna biar makin cakep
+    const gradient = ctxGauge.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(6, 182, 212, 1)');   // Cyan terang
+    gradient.addColorStop(1, 'rgba(109, 40, 217, 1)'); // Ungu (match accent card lo)
+
+    new Chart(ctxGauge, {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [{{ total_warga }}, 0], // Nilai 0 di sini hanya sebagai pembanding sisa
+                backgroundColor: [gradient, 'rgba(255, 255, 255, 0.05)'],
+                borderWidth: 0,
+                circumference: 180, // Potong jadi setengah lingkaran
+                rotation: 270,      // Putar agar melengkung ke atas
+                cutout: '80%',      // Ketebalan ring
+                borderRadius: 10    // Bikin ujungnya rounded (keren!)
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: { bottom: 20 }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: { enabled: false }
+            },
+            // Tambahkan/Update bagian ini:
+            animation: {
+                animateRotate: true,     // Pastikan ini true
+                animateScale: true,      // Tambahkan ini biar ada efek 'tumbuh' dari kecil ke besar
+                duration: 2000,          // Durasi 2 detik
+                easing: 'easeOutQuart'   // Easing yang halus
+            }
+        }
+    });
+</script>
 {% endblock %}

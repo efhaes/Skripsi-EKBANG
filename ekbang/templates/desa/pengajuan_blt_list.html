@@ -2,17 +2,20 @@
 {% load static %}
 {% load humanize %}
 {% block title %}Daftar Pengajuan BLT{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/desa/warga_list.css' %}">
 {% endblock %}
-{% block content %}
 
+{% block content %}
 <div class="page-header">
     <div>
         <h2>Daftar Pengajuan BLT {{ request.user.username }}</h2>
-        <p>  {{ request.user.username }}</p>
+        <p>Kelola data pengajuan bantuan langsung tunai desa.</p>
     </div>
-    <a href="{% url 'desa_pengajuan' %}" class="btn-glass">➕ Tambah Pengajuan</a>
+    <a href="{% url 'desa_pengajuan' %}" class="btn-glass">
+        <i class="fa-solid fa-circle-plus"></i> Tambah Pengajuan
+    </a>
 </div>
 
 <div class="glass-card table-card">
@@ -21,43 +24,21 @@
             <tr>
                 <th>No</th>
                 <th>No SK</th>
-                <th>File SK</th>
-                <th>File Hasil SAW</th>
-                <th>Jumlah Dana</th>
-                <th>Jumlah Perbulan</th>
                 <th>Jumlah KPM</th>
-                <th>Tahap</th>
-                <th>Tahun</th>
+                <th>Periode (Tahap/Tahun)</th>
                 <th>Status</th>
                 <th>Catatan</th>
-                <th>Aksi</th>
+                <th class="text-center">Aksi</th>
             </tr>
         </thead>
         <tbody>
             {% for p in pengajuan %}
             <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ p.noSK }}</td>
-                <td>
-                    {% if p.fileSK %}
-                        <a href="{{ p.fileSK.url }}" target="_blank">📄 Lihat File SK</a>
-                    {% else %}
-                        -
-                    {% endif %}
-                </td>
-                <td>
-                    {% if p.file_hasil_saw %}
-                        <a href="{{ p.file_hasil_saw.url }}" target="_blank">📄 Lihat File</a>
-                    {% else %}
-                        -
-                    {% endif %}
-                </td>
-                <td>Rp {{ p.jumlah_dana|intcomma }}</td>
-                <td>Rp {{ p.perbulan|intcomma }}</td>
-                <td>{{ p.jumlah_kpm }}</td>
-                <td>{{ p.tahap }}</td>
-                <td>{{ p.tahun }}</td>
-                <td>
+                <td data-label="No">{{ forloop.counter }}</td>
+                <td data-label="No SK"><strong>{{ p.noSK }}</strong></td>
+                <td data-label="KPM">{{ p.jumlah_kpm }} Jiwa</td>
+                <td data-label="Periode">{{ p.tahap }} / {{ p.tahun }}</td>
+                <td data-label="Status">
                     {% if p.status == 'pending' %}
                         <span class="status pending">Pending</span>
                     {% elif p.status == 'valid' %}
@@ -66,62 +47,88 @@
                         <span class="status tidak-valid">Tidak Valid</span>
                     {% endif %}
                 </td>
-                <td>{{ p.catatan|default:"-" }}</td>
-                <td class="action">
-                    <a href="{% url 'desa_pengajuan_edit' p.id %}" class="btn-icon edit">✏️</a>
-                    <a href="#" class="btn-icon delete" data-url="{% url 'desa_pengajuan_blt_hapus' p.id %}" onclick="openHapusModal(this)">🗑</a>
-
-                    
+                <td data-label="Catatan">{{ p.catatan|default:"-" }}</td>
+                <td data-label="Aksi" class="action text-center">
+                    <a href="{% url 'desa_pengajuan_edit' p.id %}" class="btn-icon edit" title="Edit">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </a>
+                    <a href="javascript:void(0)" class="btn-icon delete" 
+                        data-url="{% url 'desa_pengajuan_blt_hapus' p.id %}" 
+                        data-tahap="{{ p.tahap }}" 
+                        data-tahun="{{ p.tahun }}"
+                        onclick="openHapusModal(this)" title="Hapus">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </a>
                 </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="9" style="text-align:center; color:#ccc;">Belum ada pengajuan</td>
+                <td colspan="7" class="text-center text-muted" style="padding: 3rem;">
+                    <i class="fa-solid fa-folder-open d-block mb-2" style="font-size: 2rem; opacity: 0.3;"></i>
+                    Belum ada data pengajuan
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
-<!-- Modal Hapus -->
+
 <div id="hapusModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h3>Hapus Pengajuan</h3>
-        <p>Apakah Anda yakin ingin menghapus pengajuan ini?</p>
-        <div class="modal-actions">
-            <a href="#" id="confirmDeleteBtn" class="btn-glass delete">Hapus</a>
-            <button id="cancelBtn" class="btn-glass">Batal</button>
-            
+    <div class="modal-content glass-modal">
+        <div class="modal-header">
+            <div class="warning-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3>Konfirmasi Hapus</h3>
+        </div>
+        
+        <div class="modal-body">
+            <p>Apakah Anda yakin ingin menghapus pengajuan <strong>Tahap <span id="displayTahap"></span> / Tahun <span id="displayTahun"></span></strong>?</p>
+            <p class="sub-text">Tindakan ini akan menghapus data secara permanen.</p>
+        </div>
+
+        <div class="modal-footer">
+            <button id="cancelBtn" class="btn-secondary">Batal</button>
+            <a href="#" id="confirmDeleteBtn" class="btn-danger-glass">Ya, Hapus Data</a>
         </div>
     </div>
 </div>
-
 {% endblock %}
 {% block extra_js %}
 <script>
-const modal = document.getElementById('hapusModal');
-const closeBtn = modal.querySelector('.close');
-const cancelBtn = document.getElementById('cancelBtn');
-const confirmBtn = document.getElementById('confirmDeleteBtn');
+    const modal = document.getElementById('hapusModal');
+    const confirmBtn = document.getElementById('confirmDeleteBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
 
-function openHapusModal(element) {
-    const url = element.getAttribute('data-url');
-    confirmBtn.setAttribute('href', url);
-    modal.style.display = 'block';
-}
+    function openHapusModal(element) {
+        // 1. Ambil data dari atribut tombol yang diklik
+        const url = element.getAttribute('data-url');
+        const tahap = element.getAttribute('data-tahap');
+        const tahun = element.getAttribute('data-tahun');
 
-closeBtn.onclick = function() {
-    modal.style.display = 'none';
-}
+        // 2. Masukkan ke elemen teks di dalam modal
+        document.getElementById('displayTahap').innerText = tahap;
+        document.getElementById('displayTahun').innerText = tahun;
+        
+        // 3. Pasang URL hapus ke tombol "Ya, Hapus"
+        confirmBtn.setAttribute('href', url);
+        
+        // 4. Tampilkan modal
+        modal.style.display = 'block';
+    }
 
-cancelBtn.onclick = function() {
-    modal.style.display = 'none';
-}
-
-window.onclick = function(event) {
-    if(event.target == modal) {
+    // Fungsi tutup modal
+    function closeModal() {
         modal.style.display = 'none';
     }
-}
+
+    cancelBtn.onclick = closeModal;
+
+    // Tutup modal kalau user klik di luar kotak modal
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
 </script>
 {% endblock %}

@@ -25,25 +25,39 @@
     </div>
 
     <div class="sidebar-scroll">
-        <nav class="sidebar-menu">
-            <a href="{% url 'desa_dashboard' %}" class="menu-item">📊 Dashboard</a>
+    <nav class="sidebar-menu">
+        <a href="{% url 'desa_dashboard' %}" class="menu-item">
+            <i class="fa-solid fa-house-chimney-window"></i> Dashboard
+        </a>
 
-            <div class="menu-section">DATA</div>
-            <a href="{% url 'desa_warga_list' %}" class="menu-item">👥 Data Warga</a>
-            <a href="{% url 'desa_warga_tambah' %}" class="menu-item">➕ Tambah Warga</a>
+        <div class="menu-section">DATA</div>
+        <a href="{% url 'desa_warga_list' %}" class="menu-item">
+            <i class="fa-solid fa-users-viewfinder"></i> Data Warga
+        </a>
+        <a href="{% url 'desa_warga_tambah' %}" class="menu-item">
+            <i class="fa-solid fa-user-plus"></i> Tambah Warga
+        </a>
 
-            <div class="menu-section">PERHITUNGAN</div>
-            <a href="{% url 'desa_hasil_saw' %}" class="menu-item">🧮 Hasil SAW</a>
+        <div class="menu-section">PERHITUNGAN</div>
+        <a href="{% url 'desa_hasil_saw' %}" class="menu-item">
+            <i class="fa-solid fa-calculator"></i> Hasil SAW
+        </a>
 
-            <div class="menu-section">PENGAJUAN</div>
-            <a href="{% url 'desa_pengajuan' %}" class="menu-item">📑 Pengajuan BLT</a>
-            <a href="{% url 'desa_pengajuan_list' %}" class="menu-item">📑 Data Pengajuan BLT</a>
-        </nav>
+        <div class="menu-section">PENGAJUAN</div>
+        <a href="{% url 'desa_pengajuan' %}" class="menu-item">
+            <i class="fa-solid fa-file-signature"></i> Pengajuan BLT
+        </a>
+        <a href="{% url 'desa_pengajuan_list' %}" class="menu-item">
+            <i class="fa-solid fa-box-archive"></i> Data Pengajuan BLT
+        </a>
+    </nav>
 
-        <div class="sidebar-footer">
-            <a href="{% url 'logout' %}" class="menu-item logout">🚪 Logout</a>
-        </div>
+    <div class="sidebar-footer">
+        <a href="{% url 'logout' %}" class="menu-item logout">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
     </div>
+</div>
 </div>
 
 

@@ -162,11 +162,51 @@
         </div>
 
         <!-- ACTION -->
-        <div class="form-actions">
-            <button class="btn btn-success">💾 Simpan Data</button>
-            <a href="{% url 'desa_warga_list' %}" class="btn btn-outline-light">↩ Kembali</a>
-        </div>
+       <div class="form-actions">
+    <button type="submit" id="btnSimpan" class="btn btn-success">
+        <i class="fa-solid fa-floppy-disk"></i> <span>Simpan Data</span>
+    </button>
+    
+    <button type="button" onclick="goBack()" class="btn btn-outline-light">
+        <i class="fa-solid fa-rotate-left"></i> Kembali
+    </button>
+</div>
     </form>
 
 </div>
+{% endblock %}
+{% block extra_js %}
+<script>
+    // 1. Fungsi Kembali (History Back)
+    function goBack() {
+        if (document.referrer.indexOf(window.location.host) !== -1) {
+            // Jika ada history sebelumnya, balik ke sana
+            window.history.back();
+        } else {
+            // Jika buka langsung/tab baru, arahkan ke daftar warga (fallback)
+            window.location.href = "{% url 'desa_warga_list' %}";
+        }
+    }
+
+    // 2. Efek Loading saat Klik Simpan
+    const form = document.querySelector('form');
+    const btnSimpan = document.getElementById('btnSimpan');
+    const btnText = btnSimpan.querySelector('span');
+
+    form.onsubmit = function() {
+        // Cek validitas form standar HTML5
+        if (form.checkValidity()) {
+            // Ganti teks & icon jadi loading
+            btnSimpan.disabled = true;
+            btnSimpan.style.opacity = '0.7';
+            btnSimpan.style.cursor = 'not-allowed';
+            btnText.innerText = "Sedang Menyimpan...";
+            
+            // Tambahkan icon spinner jika lo mau (opsional)
+            btnSimpan.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+            
+            return true;
+        }
+    };
+</script>
 {% endblock %}
