@@ -5,13 +5,19 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from ekbang.proses.decorators import role_required
 from django.db.models import Q
-from ekbang.models import Desa, Warga, HasilSAW, PengajuanBLT,NormalisasiSAW
+from ekbang.models import Desa, Warga, HasilSAW, PengajuanBLT,NormalisasiSAW,KuotaKPM
 from ekbang.proses.saw import hitung_saw
-from ekbang.forms import WargaForm, PengajuanBLTForm
+from ekbang.forms import WargaForm, PengajuanBLTForm,KuotaKPMForm
 from django.http import HttpResponse
 from openpyxl import Workbook
 from django.template.loader import render_to_string
 from django.http import JsonResponse
+from openpyxl import Workbook
+from openpyxl.styles import Font
+from openpyxl.utils import get_column_letter
+from django.http import HttpResponse
+from django.contrib import messages
+from django.shortcuts import redirect
 
 @login_required
 @role_required('desa')
@@ -51,7 +57,11 @@ def warga_list(request):
             'desa/partials/warga_rows.html',
             {'warga': warga}
         )
-        return JsonResponse({'html': html})
+        cards_html = render_to_string(
+            'desa/partials/warga_cards.html',
+            {'warga': warga}
+        )
+        return JsonResponse({'html': html, 'cards_html': cards_html})
 
     return render(request, 'desa/warga_list.html', {
         'warga': warga,
@@ -113,7 +123,16 @@ def proses_saw_view(request):
         messages.warning(request, 'Data warga masih kosong')
         return redirect('desa_hasil_saw')
 
-    hitung_saw(desa)  # 🔥 NGITUNG CUMA DI SINI
+    # Simpan kuota KPM dari modal
+    if request.method == 'POST':
+        jumlah_kpm = request.POST.get('jumlah_kpm')
+        if jumlah_kpm:
+            KuotaKPM.objects.update_or_create(
+                desa=desa,
+                defaults={'jumlah': int(jumlah_kpm)}
+            )
+
+    hitung_saw(desa)
 
     messages.success(request, 'Proses SAW berhasil dijalankan')
     return redirect('desa_hasil_saw')
@@ -124,19 +143,30 @@ def proses_saw_view(request):
 @role_required('desa')
 def hasil_saw_list(request):
     desa = request.user.desa
-    normalisasi = NormalisasiSAW.objects.filter(
-    desa=desa
-    ).select_related('warga')
-
-    hasil = HasilSAW.objects.filter(
-        desa=desa
-    ).select_related('warga').order_by('ranking')
+    normalisasi = NormalisasiSAW.objects.filter(desa=desa).select_related('warga')
+    hasil = HasilSAW.objects.filter(desa=desa).select_related('warga').order_by('ranking')
+    kuota_obj = KuotaKPM.objects.filter(desa=desa).first()
 
     return render(request, 'desa/hasil_saw.html', {
-    'hasil': hasil,
-    'normalisasi': normalisasi,
-    'sudah_diproses': hasil.exists()
-})
+        'hasil': hasil,
+        'normalisasi': normalisasi,
+        'sudah_diproses': hasil.exists(),
+        'kuota': kuota_obj.jumlah if kuota_obj else 0,
+        'kuota_form': KuotaKPMForm(instance=kuota_obj),
+    })
+
+
+@login_required
+@role_required('desa')
+def set_kuota_kpm(request):
+    if request.method == 'POST':
+        desa = request.user.desa
+        kuota, _ = KuotaKPM.objects.get_or_create(desa=desa)
+        form = KuotaKPMForm(request.POST, instance=kuota)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Kuota KPM berhasil disimpan')
+    return redirect('desa_hasil_saw')
 
 
 
@@ -190,12 +220,7 @@ def pengajuan_blt_edit(request, id):
     return render(request, 'desa/pengajuan_form.html', {'form': form })
 
 
-from openpyxl import Workbook
-from openpyxl.styles import Font
-from openpyxl.utils import get_column_letter
-from django.http import HttpResponse
-from django.contrib import messages
-from django.shortcuts import redirect
+
 
 @login_required
 @role_required('desa')

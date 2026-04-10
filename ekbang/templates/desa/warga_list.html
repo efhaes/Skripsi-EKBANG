@@ -5,18 +5,17 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/desa/warga_list.css' %}">
 {% endblock %}
+
 {% block content %}
 <div class="page-header">
     <div>
         <h2>Data Warga Desa {{ request.user.username }}</h2>
         <p>Daftar penduduk terdaftar dalam sistem</p>
     </div>
-
     <a href="{% url 'desa_warga_tambah' %}" class="btn-glass">
-        ➕ Tambah Warga
+        <i class="bi bi-plus-lg"></i> Tambah Warga
     </a>
 </div>
-
 
 <div class="glass-card">
     <div class="card-toolbar">
@@ -28,6 +27,7 @@
         </form>
     </div>
 
+    {# TABLE: tampil di desktop #}
     <table class="table-modern">
         <thead>
             <tr>
@@ -38,11 +38,15 @@
                 <th>Aksi</th>
             </tr>
         </thead>
-       <tbody id="warga-table">
-    {% include 'desa/partials/warga_rows.html' %}
+        <tbody id="warga-table">
+            {% include 'desa/partials/warga_rows.html' %}
         </tbody>
-
     </table>
+
+    {# CARD LIST: tampil di mobile #}
+    <div class="warga-card-list" id="warga-card-list">
+        {% include 'desa/partials/warga_cards.html' %}
+    </div>
 </div>
 {% endblock %}
 
@@ -50,26 +54,22 @@
 <script>
 const input = document.querySelector('.search-box input');
 const tableBody = document.getElementById('warga-table');
-
 let timer = null;
 
 input.addEventListener('keyup', function() {
     clearTimeout(timer);
-
     timer = setTimeout(() => {
         const query = input.value;
-
         fetch(`?q=${query}`, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
         .then(res => res.json())
         .then(data => {
             tableBody.innerHTML = data.html;
+            const cardList = document.getElementById('warga-card-list');
+            if (cardList) cardList.innerHTML = data.cards_html;
         });
-
-    }, 300); // delay biar ga spam request
+    }, 300);
 });
 </script>
 {% endblock %}

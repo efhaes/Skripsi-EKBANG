@@ -106,6 +106,7 @@ Nilai hasil normalisasi (0–1) berdasarkan nilai tertinggi tiap kriteria.
     </tbody>
 </table>
 </div>
+
 <!-- ============================= -->
 <!-- 3. NILAI & RANKING -->
 <!-- ============================= -->
@@ -117,28 +118,44 @@ Nilai hasil normalisasi (0–1) berdasarkan nilai tertinggi tiap kriteria.
             <th>Ranking</th>
             <th>Nama Warga</th>
             <th>Nilai Preferensi</th>
+            <th>Status</th>
         </tr>
     </thead>
     <tbody>
         {% for h in hasil %}
-        <tr class="{% if forloop.first %}rank-top{% endif %}">
+
+        {# Garis batas KPM #}
+        {% if kuota > 0 and forloop.counter == kuota|add:1 %}
+        <tr class="batas-kpm">
+            <td colspan="4">── Batas {{ kuota }} Penerima BLT ──</td>
+        </tr>
+        {% endif %}
+
+        <tr class="{% if kuota > 0 and forloop.counter <= kuota %}row-lolos{% else %}row-tidak{% endif %}">
             <td>
-                <span class="rank-badge rank-{{ forloop.counter }}">
+                <span class="rank-badge {% if forloop.counter <= 3 %}rank-top-{{ forloop.counter }}{% endif %}">
                     {{ forloop.counter }}
                 </span>
             </td>
-            <td class="rank-name">
-                {{ h.warga.nama }}
-                
-            </td>
-            <td class="rank-score">
-                {{ h.nilai_preferensi|floatformat:4 }}
+            <td class="rank-name">{{ h.warga.nama }}</td>
+            <td class="rank-score">{{ h.nilai_preferensi|floatformat:4 }}</td>
+            <td>
+                {% if kuota > 0 %}
+                    {% if forloop.counter <= kuota %}
+                        <span class="badge-lolos">✅ Penerima</span>
+                    {% else %}
+                        <span class="badge-tidak">❌ Tidak Menerima</span>
+                    {% endif %}
+                {% else %}
+                    <span style="color:rgba(255,255,255,0.3)">— set kuota dulu</span>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 </div>
+
 
 <div class="alert alert-secondary small mt-4"
      style="background: rgba(255,255,255,0.08); border:none;">
@@ -157,17 +174,30 @@ Nilai hasil normalisasi (0–1) berdasarkan nilai tertinggi tiap kriteria.
             <br>• Ranking Prioritas
         </p>
 
-        <div class="saw-modal-actions">
-            <button class="btn btn-outline-light btn-sm"
-                    onclick="closeSawModal()">
-                ❌ Batal
-            </button>
+        <form method="post" action="{% url 'desa_proses_saw' %}">
+            {% csrf_token %}
+            <div class="kuota-input-group">
+                <label>🎯 Kuota Penerima BLT (KPM)</label>
+                <input type="number"
+                       name="jumlah_kpm"
+                       min="1"
+                       value="{{ kuota }}"
+                       placeholder="Masukkan jumlah KPM"
+                       required>
+                <small>Warga di atas kuota ini akan ditandai sebagai penerima BLT</small>
+            </div>
 
-            <a href="{% url 'desa_proses_saw' %}"
-               class="btn btn-success btn-sm">
-                ✅ Proses Sekarang
-            </a>
-        </div>
+            <div class="saw-modal-actions">
+                <button type="button"
+                        class="btn btn-outline-light btn-sm"
+                        onclick="closeSawModal()">
+                    ❌ Batal
+                </button>
+                <button type="submit" class="btn btn-success btn-sm">
+                    ✅ Proses Sekarang
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 

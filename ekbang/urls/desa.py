@@ -13,6 +13,7 @@ urlpatterns = [
     path('warga/<int:id>/hapus/', views.warga_hapus, name='desa_warga_hapus'),
 
     # SAW
+    # urls.py — tidak perlu diubah, path() Django otomatis terima GET dan POST
     path('saw/proses/', views.proses_saw_view, name='desa_proses_saw'),
     path('saw/hasil/', views.hasil_saw_list, name='desa_hasil_saw'),
     path(

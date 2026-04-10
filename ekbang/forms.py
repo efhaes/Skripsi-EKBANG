@@ -1,6 +1,5 @@
 from django import forms
-from .models import Warga, PengajuanBLT
-from django import forms
+from .models import Warga, PengajuanBLT,KuotaKPM
 from django.contrib.auth.models import User
 from ekbang.models import Desa
 
@@ -11,6 +10,13 @@ NILAI_KRITERIA = [
 ]
 
 class WargaForm(forms.ModelForm):
+
+    def clean_nik(self):
+        nik = self.cleaned_data.get('nik')
+        if nik and not nik.isdigit():
+            raise forms.ValidationError("NIK hanya boleh berisi angka (0-9).")
+        return nik
+
     class Meta:
         model = Warga
         fields = [
@@ -25,66 +31,48 @@ class WargaForm(forms.ModelForm):
             'lansia_tunggal',
             'perempuan_kepala',
         ]
+        labels = {
+            'nik': 'NIK',
+        }
+        error_messages = {
+            'nik': {
+                'required': 'NIK wajib diisi.',
+                'unique': 'NIK sudah terdaftar di sistem.',
+                'max_length': 'NIK harus terdiri dari 16 digit.',
+                'min_length': 'NIK harus terdiri dari 16 digit.',
+            }
+        }
         widgets = {
             'alamat': forms.Textarea(attrs={'rows': 3}),
-
             'desil_p3ke': forms.RadioSelect(choices=[
                 (1, 'Desil 1 – Sangat Miskin (Prioritas Utama)'),
                 (2, 'Desil 2 – Miskin'),
                 (3, 'Desil 3 – Rentan Miskin'),
                 (4, 'Desil 4 – Hampir Rentan'),
             ]),
-
             'kehilangan_pekerjaan': forms.RadioSelect(choices=[
                 (1, 'Tidak kehilangan pekerjaan'),
                 (3, 'Kehilangan sementara'),
                 (5, 'Kehilangan tetap')
             ]),
-
             'sakit_kronis': forms.RadioSelect(choices=[
                 (1, 'Tidak ada'),
                 (3, 'Sakit kronis ringan'),
                 (5, 'Sakit kronis berat / difabel')
             ]),
-
             'tidak_pkh': forms.RadioSelect(choices=[
                 (1, 'Menerima PKH'),
                 (5, 'Tidak menerima PKH')
             ]),
-
             'lansia_tunggal': forms.RadioSelect(choices=[
                 (1, 'Bukan lansia tunggal'),
                 (5, 'Lansia tunggal')
             ]),
-
             'perempuan_kepala': forms.RadioSelect(choices=[
                 (1, 'Bukan'),
                 (5, 'Perempuan kepala keluarga')
             ]),
         }
-def clean_nik(self):
-    nik = self.cleaned_data.get('nik')
-
-    if nik and not nik.isdigit():
-        raise forms.ValidationError("NIK hanya boleh berisi angka (0-9).")
-
-    return nik
-
-class Meta:
-    model = Warga
-    fields = [...]
-    labels = {
-        'nik': 'NIK'
-    }
-    error_messages = {
-        'nik': {
-            'required': 'NIK wajib diisi.',
-            'unique': 'NIK sudah terdaftar di sistem.',
-            'invalid': 'NIK harus terdiri dari 16 digit angka.',
-            'max_length': 'NIK harus terdiri dari 16 digit.',
-            'min_length': 'NIK harus terdiri dari 16 digit.',
-        }
-    }
 
 
 
@@ -147,3 +135,19 @@ class DesaCreateForm(forms.Form):
                 raise forms.ValidationError('Username sudah digunakan')
 
         return username
+
+
+
+class KuotaKPMForm(forms.ModelForm):
+    class Meta:
+        model = KuotaKPM
+        fields = ['jumlah']
+        labels = {
+            'jumlah': 'Jumlah Penerima BLT (KPM)'
+        }
+        widgets = {
+            'jumlah': forms.NumberInput(attrs={
+                'min': 1,
+                'placeholder': 'Masukkan jumlah KPM'
+            })
+        }

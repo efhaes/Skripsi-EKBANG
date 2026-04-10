@@ -5,10 +5,14 @@
     <td>{{ w.nama }}</td>
     <td>{{ w.alamat }}</td>
     <td class="action">
-        <a href="{% url 'desa_warga_edit' w.id %}" class="btn-icon edit">✏️</a>
+        <a href="{% url 'desa_warga_edit' w.id %}" class="btn-icon edit">
+            <i class="bi bi-pencil-square"></i>
+        </a>
         <a href="{% url 'desa_warga_hapus' w.id %}"
            class="btn-icon delete"
-           onclick="return confirm('Yakin hapus data ini?')">🗑</a>
+           onclick="return confirm('Yakin hapus data ini?')">
+            <i class="bi bi-trash3"></i>
+        </a>
     </td>
 </tr>
 {% empty %}

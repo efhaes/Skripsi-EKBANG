@@ -1,0 +1,32 @@
+{% for w in warga %}
+<div class="warga-card">
+    <div class="warga-card-header">
+        <span class="warga-card-nama">{{ w.nama }}</span>
+        <span class="warga-card-no">#{{ forloop.counter }}</span>
+    </div>
+    <div class="warga-card-body">
+        <span>
+            <span class="label">NIK</span>
+            {{ w.nik }}
+        </span>
+        <span>
+            <span class="label">Alamat</span>
+            {{ w.alamat }}
+        </span>
+    </div>
+    <div class="warga-card-actions">
+        <a href="{% url 'desa_warga_edit' w.id %}" class="btn-icon edit">
+            <i class="bi bi-pencil-square"></i>
+        </a>
+        <a href="{% url 'desa_warga_hapus' w.id %}"
+           class="btn-icon delete"
+           onclick="return confirm('Yakin hapus data ini?')">
+            <i class="bi bi-trash3"></i>
+        </a>
+    </div>
+</div>
+{% empty %}
+<p style="color: #B0B0B0; text-align: center; padding: 20px;">
+    Data tidak ditemukan
+</p>
+{% endfor %}
