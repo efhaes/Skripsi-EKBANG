@@ -3,6 +3,7 @@ from django.db import models
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import User
 import datetime
 
 class Profile(models.Model):
@@ -142,8 +143,14 @@ class HasilSAW(models.Model):
         return f"{self.warga.nama} - {self.desa.nama_desa} - Rank {self.ranking}"
 
 
+class KuotaKPM(models.Model):
+    desa = models.OneToOneField(Desa, on_delete=models.CASCADE, related_name='kuota_kpm')
+    jumlah = models.PositiveIntegerField(default=0)
+    updated_at = models.DateTimeField(auto_now=True)
 
-from django.contrib.auth.models import User
+    def __str__(self):
+        return f"{self.desa} - {self.jumlah} KPM"
+
 
 class PengajuanBLT(models.Model):
     desa = models.ForeignKey(
