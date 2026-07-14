@@ -26,25 +26,52 @@
 
     <div class="sidebar-scroll">
         <nav class="sidebar-menu">
-            <a href="{% url 'kecamatan_dashboard' %}" class="menu-item">📊 Dashboard</a>
+            <a href="{% url 'kecamatan_dashboard' %}" class="menu-item">
+                <i class="fa-solid fa-chart-line"></i> Dashboard
+            </a>
 
             <div class="menu-section">DATA</div>
-            <a href="{% url 'kecamatan_desa_list' %}" class="menu-item">👥 Data Akun Desa</a>
-            <a href="{% url 'kecamatan_desa_tambah' %}" class="menu-item">➕ Tambah Akun Desa</a>
+            <a href="{% url 'kecamatan_desa_list' %}" class="menu-item">
+                <i class="fa-solid fa-building-user"></i> Data Akun Desa
+            </a>
 
             <div class="menu-section">PENGAJUAN</div>
-            <a href="{% url 'kecamatan_pengajuan_list' %}" class="menu-item">📑 Data Pengajuan BLT Desa</a>
-           
+            <a href="{% url 'kecamatan_pengajuan_list' %}" class="menu-item">
+                <i class="fa-solid fa-file-signature"></i> Data Pengajuan BLT Desa
+            </a>
+
         </nav>
 
         <div class="sidebar-footer">
-            <a href="{% url 'logout' %}" class="menu-item logout">🚪 Logout</a>
+            <button type="button" class="menu-item logout" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
         </div>
     </div>
 </div>
 
-
-{% block extra_js %}
+<!-- MODAL KONFIRMASI LOGOUT -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="logoutModalLabel">Konfirmasi Logout</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Apakah kamu yakin ingin keluar dari sistem?
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+          Batal
+        </button>
+        <a href="{% url 'logout' %}" class="btn btn-danger rounded-pill px-4">
+          Ya, Logout
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 function toggleSidebar() {
@@ -70,10 +97,3 @@ window.addEventListener('resize', () => {
     }
 });
 </script>
-
-
-
-
-
-{% endblock %}
-

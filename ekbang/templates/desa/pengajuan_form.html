@@ -90,6 +90,14 @@
                         </a>
                     </div>
                 {% endif %}
+
+                {% if form.fileSK.errors %}
+                    <div class="error-message">
+                        {% for error in form.fileSK.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
 
         </div>
@@ -107,6 +115,14 @@
             {% endif %}
 
             <input type="file" name="file_hasil_saw" class="form-control">
+
+            {% if form.file_hasil_saw.errors %}
+                <div class="error-message">
+                    {% for error in form.file_hasil_saw.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
 
             <!-- BARIS 1 -->

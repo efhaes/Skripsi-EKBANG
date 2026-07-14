@@ -1,0 +1,163 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block title %}Detail Warga - {{ warga.nama }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/desa/warga_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2>Detail Data Warga</h2>
+        <p>Informasi lengkap data warga</p>
+    </div>
+    <div class="header-actions">
+        <a href="{% url 'desa_warga_edit' warga.id %}" class="btn-glass">
+            <i class="bi bi-pencil-square"></i> Edit
+        </a>
+        <a href="{% url 'desa_warga_list' %}" class="btn-glass secondary">
+            <i class="bi bi-arrow-left"></i> Kembali
+        </a>
+    </div>
+</div>
+
+<div class="detail-container">
+    <!-- DATA UTAMA & KRITERIA SAW GRID -->
+    <div class="detail-grid">
+        <!-- DATA UTAMA -->
+        <div class="glass-card">
+            <div class="card-header">
+                <h4><i class="bi bi-person-vcard"></i> Data Utama</h4>
+            </div>
+            <div class="card-body">
+                <div class="detail-row">
+                    <span class="label">NIK</span>
+                    <span class="value">{{ warga.nik }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Nama Lengkap</span>
+                    <span class="value">{{ warga.nama }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Jumlah Keluarga KPM</span>
+                    <span class="value">{{ warga.jumlah_keluarga_kpm }} orang</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Alamat</span>
+                    <span class="value">{{ warga.alamat }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Desa</span>
+                    <span class="value">{{ warga.desa.nama_desa }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- KRITERIA SAW -->
+        <div class="glass-card">
+            <div class="card-header">
+                <h4><i class="bi bi-clipboard-data"></i> Kriteria Penilaian SAW</h4>
+            </div>
+            <div class="card-body">
+                {% for nilai in nilai_kriteria %}
+<div class="detail-row">
+    <span class="label">
+        {{ nilai.kriteria.nama }}
+    </span>
+
+    <span class="value">
+        {{ nilai.subkriteria.label }}
+    </span>
+</div>
+{% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- HASIL SAW (jika ada) -->
+
+
+    <!-- NORMALISASI (jika ada) -->
+    {% if normalisasi %}
+    <div class="glass-card">
+        <div class="card-header">
+            <h4><i class="bi bi-calculator"></i> Nilai Normalisasi</h4>
+        </div>
+        <div class="card-body">
+
+    {% for detail in detail_normalisasi %}
+    <div class="detail-row">
+        <span class="label">
+            {{ detail.kriteria.nama }}
+        </span>
+
+        <span class="value">
+            {{ detail.nilai_normalisasi|floatformat:4 }}
+        </span>
+    </div>
+    {% empty %}
+    <div class="text-center text-muted">
+        Belum ada data normalisasi.
+    </div>
+    {% endfor %}
+
+</div>
+    </div>
+        {% if hasil_saw %}
+<div class="glass-card highlight">
+    <div class="card-header">
+        <h4><i class="bi bi-trophy"></i> Hasil Perhitungan SAW</h4>
+    </div>
+
+    <div class="card-body">
+
+        <div class="detail-row">
+            <span class="label">Tahap</span>
+            <span class="value">
+                {{ hasil_saw.normalisasi.tahap }}
+            </span>
+        </div>
+
+        <div class="detail-row">
+            <span class="label">Tahun</span>
+            <span class="value">
+                {{ hasil_saw.normalisasi.tahun }}
+            </span>
+        </div>
+
+        <div class="detail-row">
+            <span class="label">Ranking</span>
+            <span class="value badge badge-primary">
+                #{{ hasil_saw.ranking }}
+            </span>
+        </div>
+
+        <div class="detail-row">
+            <span class="label">Nilai Preferensi</span>
+            <span class="value">
+                {{ hasil_saw.nilai_preferensi|floatformat:4 }}
+            </span>
+        </div>
+
+        <div class="detail-row">
+            <span class="label">Tanggal Proses</span>
+            <span class="value">
+                {{ hasil_saw.tanggal_proses|date:"d F Y H:i" }}
+            </span>
+        </div>
+
+    </div>
+</div>
+{% endif %}
+    
+    {% else %}
+    <div class="glass-card info">
+        <div class="card-body text-center">
+            <i class="bi bi-info-circle"></i>
+            <p>Belum ada hasil perhitungan SAW untuk warga ini.</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

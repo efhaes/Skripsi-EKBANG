@@ -1,37 +1,69 @@
 {% extends 'base/base.html' %}
-{%load static%}
-{% block title %}Perhitungan SAW BLT Desa {{ request.user.username }}{% endblock %}
+{% load static %}
+{% block title %}Perhitungan SAW BLT – Tahap {{ tahap }} {{ tahun }}{% endblock %}
+
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/desa/hasil_saw.css' %}">{% endblock %}
+<link rel="stylesheet" href="{% static 'css/desa/hasil_saw.css' %}">
+{% endblock %}
 
 {% block content %}
-{% if not sudah_diproses %}
-<div class="alert alert-warning">
-    ⚠️ Data belum diproses. Klik <b>Proses SAW</b> untuk menghitung prioritas BLT.
-</div>
-{% endif %}
 
+<!-- ============================= -->
+<!-- HERO -->
+<!-- ============================= -->
 <div class="saw-hero">
     <div class="saw-hero-left">
-        <h3>📊 Penentuan Prioritas BLT Desa {{ request.user.username }} </h3>
+        <h3>Penentuan Prioritas BLT – Tahap {{ tahap }} {{ tahun }}</h3>
         <p>
             Sistem pendukung keputusan menggunakan metode
             <strong>Simple Additive Weighting (SAW)</strong>
             untuk menentukan penerima BLT secara objektif dan transparan.
         </p>
+
+        <!-- Input untuk proses ulang -->
+        <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap; margin-top:14px;">
+            <div>
+                <label class="text-light small d-block mb-1">📋 Tahap</label>
+                <select id="inputTahap" class="form-select form-select-sm" style="width:130px;">
+                    <option value="1" {% if tahap == '1' %}selected{% endif %}>Tahap 1</option>
+                    <option value="2" {% if tahap == '2' %}selected{% endif %}>Tahap 2</option>
+                    <option value="3" {% if tahap == '3' %}selected{% endif %}>Tahap 3</option>
+                </select>
+            </div>
+            <div>
+                <label class="text-light small d-block mb-1">📅 Tahun</label>
+                <input type="number" id="inputTahun"
+                       class="form-control form-control-sm"
+                       style="width:110px;" min="2020" max="2099"
+                       value="{{ tahun|default:'2025' }}">
+            </div>
+            <div>
+                <label class="text-light small d-block mb-1">🎯 Kuota KPM</label>
+                <input type="number" id="inputKuota"
+                       class="form-control form-control-sm"
+                       style="width:120px;" min="1"
+                       value="{{ kuota|default:'' }}"
+                       placeholder="Jumlah KPM">
+            </div>
+        </div>
     </div>
 
     <div class="saw-hero-actions">
-       <button class="btn-game btn-game-primary"
-        onclick="openSawModal()">
-    ⚙️ PROSES SAW
-</button>
-
-<a href="{% url 'desa_export_saw_excel' %}"
-   class="btn-game btn-game-outline">
-   📥 EXPORT EXCEL
-</a>
-
+        <a href="{% url 'desa_riwayat_saw' %}"
+           class="btn-game btn-game-outline">
+            ← Kembali
+        </a>
+        <button class="btn-game btn-game-primary" onclick="openSawModal()">
+            {% if sudah_diproses %}
+                ⚙️ PROSES ULANG
+            {% else %}
+                🚀 PROSES SAW
+            {% endif %}
+        </button>
+        <a href="{% url 'desa_export_saw_excel' %}?tahap={{ tahap }}&tahun={{ tahun }}"
+           class="btn-game btn-game-outline">
+            📥 EXPORT EXCEL
+        </a>
 
     </div>
 </div>
@@ -40,177 +72,206 @@
 <!-- ============================= -->
 <!-- 1. MATRIKS KEPUTUSAN -->
 <!-- ============================= -->
-<h5 class="text-light">1️⃣ Matriks Keputusan</h5>
+<h5 class="text-light mt-4">1️⃣ Matriks Keputusan</h5>
 <div class="table-scroll">
-<table class="saw-table">
-    <thead>
-        <tr>
-            <th>Nama</th>
-            <th>Desil P3KE</th>
-            <th>Kehilangan<br>Pekerjaan</th>
-            <th>Sakit<br>Kronis</th>
-            <th>PKH</th>
-            <th>Lansia<br>Tunggal</th>
-            <th>Perempuan<br>KK</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for h in hasil %}
-        <tr>
-            <td>{{ h.warga.nama }}</td>
-            <td>{{ h.warga.desil_p3ke }}</td>
-            <td>{{ h.warga.kehilangan_pekerjaan }}</td>
-            <td>{{ h.warga.sakit_kronis }}</td>
-            <td>{{ h.warga.tidak_pkh }}</td>
-            <td>{{ h.warga.lansia_tunggal }}</td>
-            <td>{{ h.warga.perempuan_kepala }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        <table class="saw-table">
+            <thead>
+                <tr>
+                    <th>Nama</th>
+                    {% for k in kriteria_list %}
+                        <th>{{ k.nama }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for h in hasil %}
+                <tr>
+                    <td>
+                        {% if h.normalisasi.warga %}{{ h.normalisasi.warga.nama }}{% else %}{{ h.normalisasi.nama_warga_arsip }}{% endif %}
+                    </td>
+                    {% for nilai in h.nilai_per_kriteria %}
+                        <td>{{ nilai }}</td>
+                    {% endfor %}
+                </tr>
+                {% empty %}
+                <tr><td colspan="{{ kriteria_list|length|add:1 }}" class="text-center text-muted">Belum ada data</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
 </div>
+
 
 <!-- ============================= -->
 <!-- 2. MATRIKS NORMALISASI -->
 <!-- ============================= -->
 <h5 class="text-light mt-4">2️⃣ Matriks Normalisasi</h5>
 <p class="text-muted small">
-Nilai hasil normalisasi (0–1) berdasarkan nilai tertinggi tiap kriteria.
+    Nilai hasil normalisasi (0–1) berdasarkan nilai tertinggi/terendah tiap kriteria.
 </p>
 <div class="table-scroll">
-<table class="saw-table">
-    <thead>
-        <tr>
-            <th>Nama</th>
-            <th>R1<br><small>Desil</small></th>
-            <th>R2<br><small>Pekerjaan</small></th>
-            <th>R3<br><small>Sakit</small></th>
-            <th>R4<br><small>PKH</small></th>
-            <th>R5<br><small>Lansia</small></th>
-            <th>R6<br><small>Perempuan KK</small></th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for n in normalisasi %}
-            <tr>
-                <td>{{ n.warga.nama }}</td>
-                <td>{{ n.desil_p3ke|floatformat:3 }}</td>
-                <td>{{ n.kehilangan_pekerjaan|floatformat:3 }}</td>
-                <td>{{ n.sakit_kronis|floatformat:3 }}</td>
-                <td>{{ n.pkh|floatformat:3 }}</td>
-                <td>{{ n.lansia_tunggal|floatformat:3 }}</td>
-                <td>{{ n.perempuan_kepala|floatformat:3 }}</td>
-            </tr>
-        {% endfor %}
-
-    </tbody>
-</table>
+        <table class="saw-table">
+            <thead>
+                <tr>
+                    <th>Nama</th>
+                    {% for k in kriteria_list %}
+                        <th>{{ k.nama }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for n in normalisasi %}
+                <tr>
+                    <td>
+                        {% if n.warga %}
+                            {{ n.warga.nama }}
+                        {% else %}
+                            {{ n.nama_warga_arsip }}
+                        {% endif %}
+                    </td>
+                    {% for d in n.detail.all %}
+                        <td>{{ d.nilai_normalisasi|floatformat:4 }}</td>
+                    {% endfor %}
+                </tr>
+                {% empty %}
+                <tr><td colspan="{{ kriteria_list|length|add:1 }}" class="text-center text-muted">Belum ada data</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
 </div>
+
 
 <!-- ============================= -->
 <!-- 3. NILAI & RANKING -->
 <!-- ============================= -->
 <h5 class="text-light mt-4">3️⃣ Nilai Preferensi & Ranking</h5>
 <div class="table-scroll">
-<table class="saw-table rank-table">
-    <thead>
-        <tr>
-            <th>Ranking</th>
-            <th>Nama Warga</th>
-            <th>Nilai Preferensi</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for h in hasil %}
+    <table class="saw-table rank-table">
+        <thead>
+            <tr>
+                <th>Ranking</th>
+                <th>Nama Warga</th>
+                <th>NIK</th>
+                <th>Nilai Preferensi</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for h in hasil %}
 
-        {# Garis batas KPM #}
-        {% if kuota > 0 and forloop.counter == kuota|add:1 %}
-        <tr class="batas-kpm">
-            <td colspan="4">── Batas {{ kuota }} Penerima BLT ──</td>
-        </tr>
-        {% endif %}
+            {% if kuota > 0 and forloop.counter == kuota|add:1 %}
+            <tr class="batas-kpm">
+                <td colspan="5">── Batas {{ kuota }} Penerima BLT ──</td>
+            </tr>
+            {% endif %}
 
-        <tr class="{% if kuota > 0 and forloop.counter <= kuota %}row-lolos{% else %}row-tidak{% endif %}">
-            <td>
-                <span class="rank-badge {% if forloop.counter <= 3 %}rank-top-{{ forloop.counter }}{% endif %}">
-                    {{ forloop.counter }}
-                </span>
-            </td>
-            <td class="rank-name">{{ h.warga.nama }}</td>
-            <td class="rank-score">{{ h.nilai_preferensi|floatformat:4 }}</td>
-            <td>
-                {% if kuota > 0 %}
-                    {% if forloop.counter <= kuota %}
-                        <span class="badge-lolos">✅ Penerima</span>
+            <tr class="{% if kuota > 0 and forloop.counter <= kuota %}row-lolos{% else %}row-tidak{% endif %}">
+                <td>
+                    <span class="rank-badge {% if forloop.counter == 1 %}rank-1{% elif forloop.counter == 2 %}rank-2{% elif forloop.counter == 3 %}rank-3{% endif %}">
+                        {{ forloop.counter }}
+                    </span>
+                </td>
+                <td class="rank-name">
+                    {% if h.normalisasi.warga %}
+                        {{ h.normalisasi.warga.nama }}
                     {% else %}
-                        <span class="badge-tidak">❌ Tidak Menerima</span>
+                        {{ h.nama_warga_arsip }}
+                        <span style="color:rgba(255,255,255,0.3); font-size:0.75rem;">(terhapus)</span>
                     {% endif %}
-                {% else %}
-                    <span style="color:rgba(255,255,255,0.3)">— set kuota dulu</span>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                </td>
+                <td style="font-size:0.82rem; color:#94a3b8;">
+                    {% if h.normalisasi.warga %}{{ h.normalisasi.warga.nik }}{% else %}{{ h.nik_warga_arsip }}{% endif %}
+                </td>
+                <td class="rank-score">{{ h.nilai_preferensi|floatformat:4 }}</td>
+                <td>
+                    {% if kuota > 0 %}
+                        {% if forloop.counter <= kuota %}
+                            <span class="badge-lolos">✅ Penerima</span>
+                        {% else %}
+                            <span class="badge-tidak">❌ Tidak Menerima</span>
+                        {% endif %}
+                    {% else %}
+                        <span style="color:rgba(255,255,255,0.3)">— set kuota dulu</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center text-muted">Belum ada data</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
-
-<div class="alert alert-secondary small mt-4"
-     style="background: rgba(255,255,255,0.08); border:none;">
+<div class="alert alert-secondary small mt-4">
     💡 Semakin besar nilai preferensi, semakin tinggi prioritas penerima BLT Desa.
 </div>
 
+
+<!-- ============================= -->
+<!-- MODAL PROSES SAW -->
+<!-- ============================= -->
 <div class="saw-modal" id="sawModal">
     <div class="saw-modal-card">
-        <h5>⚙️ Proses Perhitungan SAW</h5>
+        <h5>⚙️ Konfirmasi Proses SAW</h5>
+        <p>Sistem akan menjalankan perhitungan SAW dengan detail berikut:</p>
 
-        <p>
-            Sistem akan menghitung:
-            <br>• Matriks Keputusan
-            <br>• Normalisasi
-            <br>• Nilai Preferensi
-            <br>• Ranking Prioritas
+        <table class="table table-sm text-light"
+               style="background:rgba(255,255,255,0.05); border-radius:8px;">
+            <tr><td>📋 Tahap</td><td><strong id="konfirmasiTahap">—</strong></td></tr>
+            <tr><td>📅 Tahun</td><td><strong id="konfirmasiTahun">—</strong></td></tr>
+            <tr><td>🎯 Kuota KPM</td><td><strong id="konfirmasiKuota">—</strong></td></tr>
+        </table>
+
+        <p class="text-warning small mt-2">
+            {% if sudah_diproses %}
+                ⚠️ Data SAW periode ini akan di-reset dan dihitung ulang.
+            {% else %}
+                ℹ️ Data akan dihitung untuk pertama kalinya.
+            {% endif %}
         </p>
 
         <form method="post" action="{% url 'desa_proses_saw' %}">
             {% csrf_token %}
-            <div class="kuota-input-group">
-                <label>🎯 Kuota Penerima BLT (KPM)</label>
-                <input type="number"
-                       name="jumlah_kpm"
-                       min="1"
-                       value="{{ kuota }}"
-                       placeholder="Masukkan jumlah KPM"
-                       required>
-                <small>Warga di atas kuota ini akan ditandai sebagai penerima BLT</small>
-            </div>
+            <input type="hidden" name="tahap" id="hiddenTahap">
+            <input type="hidden" name="tahun" id="hiddenTahun">
+            <input type="hidden" name="jumlah_kpm" id="hiddenKuota">
 
             <div class="saw-modal-actions">
-                <button type="button"
-                        class="btn btn-outline-light btn-sm"
-                        onclick="closeSawModal()">
-                    ❌ Batal
-                </button>
-                <button type="submit" class="btn btn-success btn-sm">
-                    ✅ Proses Sekarang
-                </button>
+                <button type="button" class="btn btn-outline-light btn-sm"
+                        onclick="closeSawModal()">❌ Batal</button>
+                <button type="submit" class="btn btn-success btn-sm">✅ Proses Sekarang</button>
             </div>
         </form>
     </div>
 </div>
 
 
+
+
 {% endblock %}
 
-{% block extra_js %}<script>
+
+{% block extra_js %}
+<script>
 function openSawModal() {
+    const tahap = document.getElementById('inputTahap').value;
+    const tahun = document.getElementById('inputTahun').value;
+    const kuota = document.getElementById('inputKuota').value;
+
+    if (!tahun || tahun < 2020) { alert('Tahun tidak valid'); return; }
+    if (!kuota || kuota < 1)    { alert('Kuota KPM wajib diisi'); return; }
+
+    document.getElementById('konfirmasiTahap').textContent = 'Tahap ' + tahap;
+    document.getElementById('konfirmasiTahun').textContent = tahun;
+    document.getElementById('konfirmasiKuota').textContent = kuota + ' orang';
+    document.getElementById('hiddenTahap').value = tahap;
+    document.getElementById('hiddenTahun').value = tahun;
+    document.getElementById('hiddenKuota').value = kuota;
+
     document.getElementById('sawModal').style.display = 'flex';
 }
+function closeSawModal()  { document.getElementById('sawModal').style.display  = 'none'; }
 
-function closeSawModal() {
-    document.getElementById('sawModal').style.display = 'none';
-}
-</script>{% endblock %}
-
+</script>
+{% endblock %}

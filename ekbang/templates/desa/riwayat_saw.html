@@ -1,0 +1,513 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block title %}Riwayat Perhitungan SAW{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/desa/hasil_saw.css' %}">
+<style>
+    /* ========== HEADER ========== */
+    .riwayat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 24px 28px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 0.5px solid rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(12px);
+        margin-bottom: 28px;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .riwayat-header h3 {
+        color: #f9fafb;
+        font-weight: 500;
+        font-size: 1.1rem;
+        margin-bottom: 6px;
+    }
+
+    .riwayat-header p {
+        color: #94a3b8;
+        font-size: 0.875rem;
+        margin: 0;
+    }
+
+    .btn-glass {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 14px;
+        background: rgba(34, 211, 238, 0.1);
+        border: 0.5px solid rgba(34, 211, 238, 0.3);
+        color: #22d3ee;
+        border-radius: 10px;
+        padding: 8px 16px;
+        font-size: 0.85rem;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+    .btn-glass:hover {
+        background: rgba(34, 211, 238, 0.18);
+        color: #22d3ee;
+    }
+
+    /* ========== TABEL (desktop) ========== */
+    .table-scroll {
+        overflow-x: auto;
+        border-radius: 14px;
+        border: 0.5px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .saw-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.875rem;
+    }
+
+    .saw-table thead {
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .saw-table th {
+        padding: 12px 16px;
+        text-align: left;
+        color: #94a3b8;
+        font-weight: 500;
+        font-size: 0.78rem;
+        white-space: nowrap;
+    }
+
+    .saw-table td {
+        padding: 12px 16px;
+        border-top: 0.5px solid rgba(255, 255, 255, 0.06);
+        color: #e2e8f0;
+        vertical-align: middle;
+    }
+
+    .saw-table tbody tr:hover td {
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    /* ========== BADGE ========== */
+    .badge-aktif {
+        background: rgba(34, 197, 94, 0.15);
+        color: #4ade80;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .badge-reset {
+        background: rgba(148, 163, 184, 0.12);
+        color: #94a3b8;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+    }
+
+    /* ========== BUTTON DETAIL ========== */
+    .btn-detail {
+        background: rgba(255, 255, 255, 0.06);
+        border: 0.5px solid rgba(255, 255, 255, 0.15);
+        color: #cbd5e1;
+        border-radius: 8px;
+        padding: 5px 12px;
+        font-size: 0.75rem;
+        text-decoration: none;
+        transition: background 0.2s;
+        display: inline-block;
+        white-space: nowrap;
+    }
+
+    .btn-detail:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+    }
+
+    .btn-hapus {
+        background: rgba(248, 113, 113, 0.08);
+        border: 0.5px solid rgba(248, 113, 113, 0.3);
+        color: #f87171;
+        border-radius: 8px;
+        padding: 5px 12px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: background 0.2s;
+        white-space: nowrap;
+    }
+
+    .btn-hapus:hover {
+        background: rgba(248, 113, 113, 0.18);
+    }
+
+    /* ========== KARTU MOBILE ========== */
+    .mobile-card-list {
+        display: none;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .m-card {
+        background: rgba(255, 255, 255, 0.06);
+        border: 0.5px solid rgba(255, 255, 255, 0.12);
+        border-radius: 14px;
+        padding: 16px;
+    }
+
+    .m-card-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+    }
+
+    .m-card-title {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #f1f5f9;
+    }
+
+    .m-card-sub {
+        font-size: 0.78rem;
+        color: #64748b;
+        margin-top: 2px;
+    }
+
+    .m-card-body {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+
+    .m-field label {
+        display: block;
+        font-size: 0.72rem;
+        color: #64748b;
+        margin-bottom: 2px;
+    }
+
+    .m-field span {
+        font-size: 0.875rem;
+        color: #e2e8f0;
+    }
+
+    .m-card-foot {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 8px;
+        border-top: 0.5px solid rgba(255, 255, 255, 0.08);
+        padding-top: 12px;
+    }
+
+    /* ========== EMPTY STATE ========== */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: rgba(255, 255, 255, 0.35);
+        border-radius: 14px;
+        border: 0.5px dashed rgba(255, 255, 255, 0.1);
+    }
+
+    .empty-state .empty-icon {
+        font-size: 2.5rem;
+        margin-bottom: 14px;
+        display: block;
+    }
+
+    .empty-state p {
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+    /* ========== MODAL ========== */
+    .saw-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+    }
+
+    .saw-modal-card {
+        background: #1e293b;
+        border: 0.5px solid rgba(255, 255, 255, 0.12);
+        border-radius: 16px;
+        padding: 24px;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .saw-modal-card h5 {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #f1f5f9;
+        margin-bottom: 8px;
+    }
+
+    .saw-modal-card p {
+        font-size: 0.875rem;
+        color: #94a3b8;
+        margin-bottom: 0;
+    }
+
+    .warn-text {
+        font-size: 0.78rem;
+        color: #fbbf24;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+
+    .modal-info-box {
+        background: rgba(248, 113, 113, 0.07);
+        border: 0.5px solid rgba(248, 113, 113, 0.2);
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin: 14px 0;
+    }
+
+    .modal-info-box p {
+        font-size: 0.85rem;
+        color: #fca5a5;
+        margin: 0;
+    }
+
+    .modal-info-box strong {
+        color: #f87171;
+    }
+
+    .saw-modal-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 20px;
+    }
+
+    .btn-batal {
+        background: rgba(255, 255, 255, 0.06);
+        border: 0.5px solid rgba(255, 255, 255, 0.15);
+        color: #94a3b8;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .btn-batal:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-hapus-confirm {
+        background: rgba(248, 113, 113, 0.15);
+        border: 0.5px solid rgba(248, 113, 113, 0.35);
+        color: #f87171;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .btn-hapus-confirm:hover {
+        background: rgba(248, 113, 113, 0.25);
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 640px) {
+        .riwayat-header {
+            padding: 18px;
+        }
+
+        .table-scroll {
+            display: none;
+        }
+
+        .mobile-card-list {
+            display: flex;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HEADER -->
+<div class="riwayat-header">
+    <div>
+        <h3>📊 Data Perhitungan SAW</h3>
+        <p>Daftar semua periode perhitungan SAW yang pernah dijalankan.</p>
+        <a href="{% url 'desa_hasil_saw' %}" class="btn-glass">
+            <i class="bi bi-plus-lg"></i> Proses SAW Baru
+        </a>
+    </div>
+</div>
+
+{% if periode_list %}
+
+<!-- TABEL — desktop -->
+<div class="table-scroll">
+    <table class="saw-table">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Tahap</th>
+                <th>Tahun</th>
+                <th>Kuota KPM</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in periode_list %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>Tahap {{ p.tahap }}</td>
+                <td>{{ p.tahun }}</td>
+                <td>
+                    {% if p.jumlah_kpm == '-' %}
+                        <span style="color: rgba(255,255,255,0.25)">—</span>
+                    {% else %}
+                        {{ p.jumlah_kpm }} orang
+                    {% endif %}
+                </td>
+                <td>
+                    {% if p.is_active %}
+                        <span class="badge-aktif">✅ Aktif</span>
+                    {% else %}
+                        <span class="badge-reset">🔄 Di-reset</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div style="display:flex; gap:6px; align-items:center;">
+                        <a href="{% url 'desa_hasil_saw' %}?tahap={{ p.tahap }}&tahun={{ p.tahun }}"
+                           class="btn-detail">
+                            🔍 Detail
+                        </a>
+                        <button class="btn-hapus"
+                                onclick="openHapusModal('{{ p.tahap }}', '{{ p.tahun }}')">
+                            🗑️ Hapus
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- KARTU — mobile -->
+<div class="mobile-card-list">
+    {% for p in periode_list %}
+    <div class="m-card">
+        <div class="m-card-head">
+            <div>
+                <div class="m-card-title">Tahap {{ p.tahap }}</div>
+                <div class="m-card-sub">{{ p.tahun }}</div>
+            </div>
+            {% if p.is_active %}
+                <span class="badge-aktif">✅ Aktif</span>
+            {% else %}
+                <span class="badge-reset">🔄 Di-reset</span>
+            {% endif %}
+        </div>
+
+        <div class="m-card-body">
+            <div class="m-field">
+                <label>Kuota KPM</label>
+                <span>
+                    {% if p.jumlah_kpm == '-' %}—{% else %}{{ p.jumlah_kpm }} orang{% endif %}
+                </span>
+            </div>
+            <div class="m-field">
+                <label>No</label>
+                <span>#{{ forloop.counter }}</span>
+            </div>
+        </div>
+
+        <div class="m-card-foot">
+            <button class="btn-hapus"
+                    onclick="openHapusModal('{{ p.tahap }}', '{{ p.tahun }}')">
+                🗑️ Hapus
+            </button>
+            <a href="{% url 'desa_hasil_saw' %}?tahap={{ p.tahap }}&tahun={{ p.tahun }}"
+               class="btn-detail">
+                🔍 Lihat Detail
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
+
+<div class="empty-state">
+    <span class="empty-icon">📭</span>
+    <p>Belum ada data perhitungan SAW.<br>Jalankan proses SAW pertama kamu di atas.</p>
+</div>
+
+{% endif %}
+
+
+<!-- ========== MODAL HAPUS ========== -->
+<div class="saw-modal" id="hapusModal">
+    <div class="saw-modal-card">
+        <h5>🗑️ Hapus Data SAW</h5>
+        <p>Kamu akan menghapus data perhitungan SAW berikut:</p>
+
+        <div class="modal-info-box">
+            <p>📋 Tahap <strong id="hapusTahapLabel">—</strong> &nbsp;·&nbsp; 📅 <strong id="hapusTahunLabel">—</strong></p>
+        </div>
+
+        <p class="warn-text">
+            ⚠️ Data akan terhapus permanen dan tidak bisa dikembalikan.
+        </p>
+
+        <form method="post" action="{% url 'desa_hapus_saw' %}" id="hapusForm">
+            {% csrf_token %}
+            <input type="hidden" name="tahap" id="hapusTahap">
+            <input type="hidden" name="tahun" id="hapusTahun">
+
+            <div class="saw-modal-actions">
+                <button type="button" class="btn-batal" onclick="closeHapusModal()">
+                    Batal
+                </button>
+                <button type="submit" class="btn-hapus-confirm">
+                    🗑️ Ya, Hapus
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function openHapusModal(tahap, tahun) {
+    document.getElementById('hapusTahapLabel').textContent = 'Tahap ' + tahap;
+    document.getElementById('hapusTahunLabel').textContent = tahun;
+    document.getElementById('hapusTahap').value = tahap;
+    document.getElementById('hapusTahun').value = tahun;
+    document.getElementById('hapusModal').style.display = 'flex';
+}
+
+function closeHapusModal() {
+    document.getElementById('hapusModal').style.display = 'none';
+}
+
+// Tutup modal kalau klik backdrop
+document.getElementById('hapusModal').addEventListener('click', function(e) {
+    if (e.target === this) closeHapusModal();
+});
+</script>
+{% endblock %}

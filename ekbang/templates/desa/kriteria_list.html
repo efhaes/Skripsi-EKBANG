@@ -1,0 +1,159 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block title %}Kriteria Penilaian SAW{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/desa/warga_list.css' %}">
+<link rel="stylesheet" href="{% static 'css/desa/kriteria_list.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2>Kriteria Penilaian SAW</h2>
+        <p>Atur kriteria dan bobot untuk perhitungan prioritas penerima BLT</p>
+    </div>
+    <div class="header-actions">
+        <div class="bobot-badge {% if bobot_maksimum %}bobot-ok{% else %}bobot-warning{% endif %}" id="bobot-badge">
+            Total Bobot : <strong id="total-bobot-value">{{ total_bobot|floatformat:2 }}</strong>
+        </div>
+        <a href="{% url 'desa_kriteria_tambah' %}" class="btn-glass">
+            <i class="bi bi-plus-lg"></i> Tambah Kriteria
+        </a>
+    </div>
+</div>
+
+<div class="glass-card">
+    <table class="table-modern">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Kriteria</th>
+                <th>Tipe</th>
+                <th>Bobot</th>
+                <th>Status</th>
+                <th>Subkriteria</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="kriteria-table-body">
+            {% for k in kriteria %}
+            <tr id="row-kriteria-{{ k.id }}">
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    <div class="kriteria-nama">{{ k.nama }}</div>
+                    <div class="kriteria-kode">{{ k.kode }}</div>
+                </td>
+                <td>
+                    {% if k.tipe == 'cost' %}
+                        <span class="badge-tipe badge-cost">Cost</span>
+                    {% else %}
+                        <span class="badge-tipe badge-benefit">Benefit</span>
+                    {% endif %}
+                </td>
+                <td>{{ k.bobot|floatformat:2 }}</td>
+                <td>
+                    {% if k.aktif %}
+                        <span class="badge-status badge-aktif">Aktif</span>
+                    {% else %}
+                        <span class="badge-status badge-nonaktif">Nonaktif</span>
+                    {% endif %}
+                </td>
+                <td>{{ k.subkriteria.count }} item</td>
+                <td>
+                    <a href="{% url 'desa_kriteria_edit' k.id %}" class="btn-action btn-edit">Edit</a>
+                    <button type="button"
+                            class="btn-action btn-hapus"
+                            onclick="konfirmasiHapus('{{ k.id }}', '{{ k.nama|escapejs }}')">
+                        Hapus
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="empty-state">Belum ada data kriteria.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{# ===== MODAL KONFIRMASI HAPUS ===== #}
+<div id="modal-hapus" class="modal">
+    <div class="glass-modal">
+        <div class="warning-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
+        <h3>Hapus Kriteria?</h3>
+        <div class="modal-body">
+            <p>Yakin mau hapus kriteria <strong id="nama-kriteria-hapus"></strong>?</p>
+            <span class="sub-text">Tindakan ini tidak bisa dibatalkan.</span>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-secondary" onclick="tutupModalHapus()">Batal</button>
+            <button type="button" class="btn-danger-glass" id="btn-confirm-hapus">Hapus</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let kriteriaIdDihapus = null;
+
+function konfirmasiHapus(id, nama) {
+    kriteriaIdDihapus = id;
+    document.getElementById('nama-kriteria-hapus').textContent = nama;
+    document.getElementById('modal-hapus').style.display = 'block';
+}
+
+function tutupModalHapus() {
+    document.getElementById('modal-hapus').style.display = 'none';
+    kriteriaIdDihapus = null;
+}
+
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+document.getElementById('btn-confirm-hapus').addEventListener('click', function () {
+    if (!kriteriaIdDihapus) return;
+
+    fetch(`/desa/kriteria/${kriteriaIdDihapus}/hapus/`, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
+    })
+    .then(res => res.json())
+    .then(data => {
+        tutupModalHapus();
+        if (data.success) {
+            const row = document.getElementById(`row-kriteria-${kriteriaIdDihapus}`);
+            if (row) row.remove();
+
+            const badge = document.getElementById('total-bobot-value');
+            if (badge && data.total_bobot !== undefined) {
+                badge.textContent = data.total_bobot.toFixed(2);
+                const wrapper = document.getElementById('bobot-badge');
+                wrapper.classList.toggle('bobot-ok', data.bobot_maksimum);
+                wrapper.classList.toggle('bobot-warning', !data.bobot_maksimum);
+            }
+        } else {
+            alert(data.message || 'Gagal menghapus kriteria.');
+        }
+    })
+    .catch(() => {
+        tutupModalHapus();
+        alert('Terjadi kesalahan saat menghapus.');
+    });
+});
+
+// Klik di luar modal buat nutup
+window.addEventListener('click', function (e) {
+    const modal = document.getElementById('modal-hapus');
+    if (e.target === modal) tutupModalHapus();
+});
+</script>
+{% endblock %}

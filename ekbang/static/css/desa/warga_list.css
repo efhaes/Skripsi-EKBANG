@@ -136,6 +136,15 @@
     box-shadow: 0 0 10px rgba(114, 136, 232, 0.4);
 }
 
+.btn-icon.view {
+    color: #34D399; /* hijau */
+}
+
+.btn-icon.view:hover {
+    background: rgba(52, 211, 153, 0.2);
+    box-shadow: 0 0 10px rgba(52, 211, 153, 0.4);
+}
+
 .btn-icon.delete {
     color: #DF2D2D; /* merah orb */
 }

@@ -1,0 +1,141 @@
+/* ===== HEADER ACTIONS ===== */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* ===== TOTAL BOBOT BADGE ===== */
+.bobot-badge {
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    backdrop-filter: blur(8px);
+}
+
+.bobot-badge strong {
+    font-size: 0.95rem;
+}
+
+.bobot-badge.bobot-ok strong {
+    color: #34D399;
+}
+
+.bobot-badge.bobot-warning strong {
+    color: #f87171;
+}
+
+/* ===== NAMA + KODE KRITERIA ===== */
+.kriteria-nama {
+    font-weight: 600;
+    color: #fff;
+    font-size: 0.92rem;
+}
+
+.kriteria-kode {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.4);
+    margin-top: 2px;
+}
+
+/* ===== BADGE TIPE (Cost/Benefit) ===== */
+.badge-tipe {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-cost {
+    color: #f87171;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.badge-benefit {
+    color: #34D399;
+    background: rgba(52, 211, 153, 0.15);
+    border: 1px solid rgba(52, 211, 153, 0.3);
+}
+
+/* ===== BADGE STATUS (Aktif/Nonaktif) ===== */
+.badge-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-aktif {
+    color: #72A8E8;
+    background: rgba(114, 136, 232, 0.18);
+    border: 1px solid rgba(114, 136, 232, 0.35);
+}
+
+.badge-nonaktif {
+    color: rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+}
+
+/* ===== TOMBOL AKSI (Edit / Hapus) ===== */
+.btn-action {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 9px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    margin-right: 6px;
+    transition: all 0.2s ease;
+}
+
+.btn-edit {
+    color: #72A8E8;
+    background: rgba(114, 136, 232, 0.15);
+    border: 1px solid rgba(114, 136, 232, 0.3);
+}
+
+.btn-edit:hover {
+    background: rgba(114, 136, 232, 0.3);
+    box-shadow: 0 0 10px rgba(114, 136, 232, 0.35);
+    color: #fff;
+}
+
+.btn-hapus {
+    color: #f87171;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.btn-hapus:hover {
+    background: rgba(239, 68, 68, 0.3);
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.35);
+    color: #fff;
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+    text-align: center;
+    padding: 30px !important;
+    color: rgba(255,255,255,0.4);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .header-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        gap: 10px;
+    }
+    .bobot-badge {
+        width: 100%;
+        text-align: center;
+    }
+}

@@ -176,6 +176,17 @@
     text-decoration: underline;
 }
 
+.error-message {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 8px;
+    color: #fca5a5;
+    font-size: 14px;
+    font-weight: 500;
+}
+
 input[type="file"].form-control {
     padding: 6px 10px;
     cursor: pointer;

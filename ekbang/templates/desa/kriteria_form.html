@@ -1,0 +1,315 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+{% if mode == 'edit' %}Edit{% else %}Tambah{% endif %} Kriteria
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-wrapper {
+        max-width: 640px;
+        margin: 0 auto;
+    }
+
+    .form-header {
+        margin-bottom: 24px;
+    }
+
+    .form-header h1 {
+        color: #fff;
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin: 0 0 6px;
+    }
+
+    .form-header p {
+        color: rgba(255,255,255,0.5);
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    .breadcrumb-link {
+        color: rgba(255,255,255,0.5);
+        font-size: 0.8rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 16px;
+    }
+
+    .breadcrumb-link:hover {
+        color: #fff;
+    }
+
+    .glass-form {
+        border-radius: 20px;
+        backdrop-filter: blur(16px);
+        background: rgba(255,255,255,0.04);
+        box-shadow:
+            inset 0 0 0 1px rgba(255,255,255,0.08),
+            0 10px 40px rgba(0,0,0,0.3);
+        padding: 32px;
+    }
+
+    .field-group {
+        margin-bottom: 22px;
+    }
+
+    .field-group label {
+        display: block;
+        color: rgba(255,255,255,0.75);
+        font-size: 0.82rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .field-hint {
+        display: block;
+        color: rgba(255,255,255,0.4);
+        font-size: 0.75rem;
+        margin-top: 6px;
+    }
+
+    .field-group input[type="text"],
+    .field-group input[type="number"],
+    .field-group select {
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: none;
+        background: rgba(255,255,255,0.06);
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
+        color: #fff;
+        font-size: 0.9rem;
+        outline: none;
+        transition: box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .field-group input:focus,
+    .field-group select:focus {
+        background: rgba(255,255,255,0.09);
+        box-shadow: inset 0 0 0 1.5px rgba(114, 136, 232, 0.8);
+    }
+
+    .field-group select option {
+        background: #0f172a;
+        color: #fff;
+    }
+
+    .field-error {
+        color: #f87171;
+        font-size: 0.78rem;
+        margin-top: 6px;
+    }
+
+    .row-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    /* ===== TOGGLE SWITCH untuk checkbox aktif ===== */
+    .toggle-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 16px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.04);
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    .toggle-row label {
+        margin: 0;
+        color: #fff;
+        font-size: 0.85rem;
+    }
+
+    .toggle-switch {
+        position: relative;
+        width: 46px;
+        height: 26px;
+    }
+
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        inset: 0;
+        background: rgba(255,255,255,0.15);
+        border-radius: 999px;
+        transition: 0.2s;
+    }
+
+    .toggle-slider::before {
+        content: "";
+        position: absolute;
+        height: 20px;
+        width: 20px;
+        left: 3px;
+        top: 3px;
+        background: #fff;
+        border-radius: 50%;
+        transition: 0.2s;
+    }
+
+    .toggle-switch input:checked + .toggle-slider {
+        background: rgb(114, 136, 232);
+    }
+
+    .toggle-switch input:checked + .toggle-slider::before {
+        transform: translateX(20px);
+    }
+
+    /* ===== BUTTON STYLING ===== */
+.btn-glass {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    color: rgba(255,255,255,0.75);
+    background: rgba(255,255,255,0.06);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
+    transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+
+.btn-glass:hover {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    text-decoration: none;
+}
+
+.btn-glass:active {
+    transform: scale(0.98);
+}
+
+.btn-glass-primary {
+    color: #fff;
+    background: rgb(114, 136, 232);
+    box-shadow: 0 6px 18px rgba(114, 136, 232, 0.35);
+}
+
+.btn-glass-primary:hover {
+    background: rgb(100, 122, 222);
+    color: #fff;
+    box-shadow: 0 8px 22px rgba(114, 136, 232, 0.45);
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+@media (max-width: 576px) {
+    .row-2,
+    .form-actions {
+        grid-template-columns: 1fr;
+        flex-direction: column;
+    }
+    .glass-form {
+        padding: 22px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page">
+    <div class="orb one"></div>
+    <div class="orb two"></div>
+    <div class="orb three"></div>
+
+    <div class="container py-4 main-content-wrapper">
+        <div class="form-wrapper">
+            <a href="{% url 'desa_kriteria_list' %}" class="breadcrumb-link">&larr; Kembali ke daftar kriteria</a>
+
+            <div class="form-header">
+                <h1>{% if mode == 'edit' %}Edit Kriteria{% else %}Tambah Kriteria Baru{% endif %}</h1>
+                <p>{% if mode == 'edit' %}Perbarui data kriteria "{{ kriteria.nama }}"{% else %}Isi detail kriteria penilaian SAW{% endif %}</p>
+            </div>
+
+            <div class="glass-form">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="field-group">
+                        <label for="{{ form.nama.id_for_label }}">Nama Kriteria</label>
+                        {{ form.nama }}
+                        {% for error in form.nama.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="field-group">
+                        <label for="{{ form.kode.id_for_label }}">Kode</label>
+                        {{ form.kode }}
+                        <span class="field-hint">Kosongkan untuk dibuat otomatis dari nama kriteria</span>
+                        {% for error in form.kode.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="row-2">
+                        <div class="field-group">
+                            <label for="{{ form.tipe.id_for_label }}">Tipe</label>
+                            {{ form.tipe }}
+                            {% for error in form.tipe.errors %}
+                                <div class="field-error">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="field-group">
+                            <label for="{{ form.bobot.id_for_label }}">Bobot</label>
+                            {{ form.bobot }}
+                            <span class="field-hint">Total bobot semua kriteria aktif idealnya = 1.00</span>
+                            {% for error in form.bobot.errors %}
+                                <div class="field-error">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="{{ form.urutan.id_for_label }}">Urutan Tampil</label>
+                        {{ form.urutan }}
+                        {% for error in form.urutan.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="field-group">
+                        <div class="toggle-row">
+                            <label for="{{ form.aktif.id_for_label }}">Kriteria Aktif</label>
+                           <div class="toggle-switch">
+                                {{ form.aktif }}
+                                <label for="{{ form.aktif.id_for_label }}" class="toggle-slider"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-glass btn-glass-primary">
+                            {% if mode == 'edit' %}Simpan Perubahan{% else %}Simpan Kriteria{% endif %}
+                        </button>
+                        <a href="{% url 'desa_kriteria_list' %}" class="btn-glass">Batal</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

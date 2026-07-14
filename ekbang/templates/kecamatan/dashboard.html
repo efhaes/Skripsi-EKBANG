@@ -31,8 +31,20 @@
     </div>
 </div>
 <div class="dashboard-container">
-    <h1 class="dashboard-title">Dashboard Admin Kecamatan</h1>
-    
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Dashboard Admin Kecamatan</h1>
+        <div class="year-filter">
+            <form method="get" action="">
+                <select name="tahun" id="tahunFilter" onchange="this.form.submit()" class="year-select">
+                    <option value="">Semua Tahun</option>
+                    {% for year in available_years %}
+                        <option value="{{ year }}" {% if selected_year == year %}selected{% endif %}>{{ year }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+    </div>
+
     <!-- Stats Cards -->
     <div class="stats-grid">
         <div class="stat-card stat-card-total-desa">
@@ -59,21 +71,97 @@
             <div class="stat-card-icon">⏳</div>
         </div>
     </div>
-    
-    <!-- Quick Actions -->
-    <div class="quick-actions">
-        <h3 class="quick-actions-title">Aksi Cepat</h3>
-        <div class="actions-grid">
-            <a href="{% url 'kecamatan_desa_list' %}" class="action-btn action-btn-kelola">
-                Kelola Data Desa
-            </a>
-            <a href="{% url 'kecamatan_pengajuan_list' %}" class="action-btn action-btn-validasi">
-                Validasi Pengajuan BLT
-            </a>
+
+    <!-- Chart and Quick Actions Grid -->
+    <div class="chart-actions-grid">
+        <!-- Chart Section -->
+        <div class="chart-section">
+            <div class="chart-card">
+                <h3 class="chart-title">Status Upload Pengajuan BLT</h3>
+                <div class="chart-container">
+                    <canvas id="uploadChart"></canvas>
+                </div>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: rgba(34, 197, 94, 0.7);"></span>
+                        <span>Sudah Upload: {{ desa_sudah_upload }} desa</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: rgba(239, 68, 68, 0.7);"></span>
+                        <span>Belum Upload: {{ desa_belum_upload }} desa</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h3 class="quick-actions-title">Aksi Cepat</h3>
+            <div class="actions-grid">
+                <a href="{% url 'kecamatan_desa_list' %}" class="action-btn action-btn-kelola">
+                    Kelola Data Desa
+                </a>
+                <a href="{% url 'kecamatan_pengajuan_list' %}" class="action-btn action-btn-validasi">
+                    Validasi Pengajuan BLT
+                </a>
+            </div>
         </div>
     </div>
     
 
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('uploadChart');
+        
+        if (ctx) {
+            const desaSudahUpload = parseInt('{{ desa_sudah_upload|default:0 }}');
+            const desaBelumUpload = parseInt('{{ desa_belum_upload|default:0 }}');
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Sudah Upload', 'Belum Upload'],
+                    datasets: [{
+                        data: [desaSudahUpload, desaBelumUpload],
+                        backgroundColor: [
+                            'rgba(34, 197, 94, 0.7)',
+                            'rgba(239, 68, 68, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(34, 197, 94, 1)',
+                            'rgba(239, 68, 68, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 13
+                            }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+        }
+    });
+</script>
 {% endblock %}

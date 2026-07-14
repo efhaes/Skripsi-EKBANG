@@ -7,16 +7,46 @@ from ekbang.models import Desa, PengajuanBLT, HasilSAW
 from django.utils import timezone
 from ekbang.forms import DesaCreateForm
 from django.contrib.auth.models import User
-from ekbang.models import Profile
+from ekbang.models import AdminKecamatan
 
 
 @login_required
 @role_required('kecamatan')
 def dashboard_kecamatan(request):
+    from django.utils import timezone
+    from datetime import datetime
+
+    selected_year = request.GET.get('tahun')
+    total_desa = Desa.objects.count()
+
+    # Get available years from PengajuanBLT
+    available_years = PengajuanBLT.objects.values_list('tahun', flat=True).distinct().order_by('-tahun')
+
+    # Filter pengajuan by year if selected
+    pengajuan_queryset = PengajuanBLT.objects.all()
+    if selected_year:
+        pengajuan_queryset = pengajuan_queryset.filter(tahun=selected_year)
+
+    # Calculate desa yang sudah upload pengajuan BLT (filtered by year)
+    if selected_year:
+        desa_with_pengajuan = Desa.objects.filter(
+            pengajuan__tahun=selected_year
+        ).distinct().count()
+    else:
+        desa_with_pengajuan = Desa.objects.filter(
+            pengajuan__isnull=False
+        ).distinct().count()
+
+    desa_belum_upload = total_desa - desa_with_pengajuan
+
     context = {
-        'total_desa': Desa.objects.count(),
-        'total_pengajuan': PengajuanBLT.objects.count(),
-        'pengajuan_pending': PengajuanBLT.objects.filter(status='pending').count(),
+        'total_desa': total_desa,
+        'total_pengajuan': pengajuan_queryset.count(),
+        'pengajuan_pending': pengajuan_queryset.filter(status='pending').count(),
+        'desa_sudah_upload': desa_with_pengajuan,
+        'desa_belum_upload': desa_belum_upload,
+        'available_years': available_years,
+        'selected_year': selected_year,
     }
     return render(request, 'kecamatan/dashboard.html', context)
 
@@ -32,18 +62,13 @@ def desa_tambah(request):
         )
 
         
-        Profile.objects.create(
-            user=user,
-            role='desa'
-        )
-
         Desa.objects.create(
-            user=user,
-            dibuat_oleh=request.user,
-            nama_desa=form.cleaned_data['nama_desa'],
-            kecamatan=form.cleaned_data['kecamatan'],
-            alamat_kantor=form.cleaned_data['alamat_kantor']
-        )
+        user=user,
+        dibuat_oleh=request.user.admin_kecamatan,  # ← pakai relasi baru
+        nama_desa=form.cleaned_data['nama_desa'],
+        kecamatan=form.cleaned_data['kecamatan'],
+        alamat_kantor=form.cleaned_data['alamat_kantor']
+    )
 
         messages.success(request, 'Akun desa berhasil dibuat')
         return redirect('kecamatan_desa_list')
@@ -137,7 +162,6 @@ def pengajuan_detail(request, pk):
         pk=pk
     )
 
-    # ⛔ kalau sudah valid → tidak bisa divalidasi ulang
     if pengajuan.status == 'valid':
         messages.info(request, 'Pengajuan ini sudah divalidasi')
         return render(request, 'kecamatan/pengajuan_detail.html', {
@@ -152,9 +176,7 @@ def pengajuan_detail(request, pk):
         if status in ['valid', 'tidak_valid']:
             pengajuan.status = status
             pengajuan.catatan = catatan
-
-            # 🧾 LOG VALIDASI
-            pengajuan.divalidasi_oleh = request.user
+            pengajuan.divalidasi_oleh = request.user.admin_kecamatan
             pengajuan.tanggal_validasi = timezone.now()
 
             pengajuan.save()

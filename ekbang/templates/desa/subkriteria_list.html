@@ -1,0 +1,150 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block title %}Subkriteria{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/desa/warga_list.css' %}">
+<link rel="stylesheet" href="{% static 'css/desa/kriteria_list.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2>Subkriteria</h2>
+        <p>Kelola nilai subkriteria untuk setiap kriteria penilaian</p>
+    </div>
+    <div class="header-actions">
+        <a href="{% url 'desa_subkriteria_tambah' %}" class="btn-glass">
+            <i class="bi bi-plus-lg"></i> Tambah Subkriteria
+        </a>
+    </div>
+</div>
+
+<div class="glass-card">
+    <table class="table-modern">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Kriteria</th>
+                <th>Label Subkriteria</th>
+                <th>Nilai</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="subkriteria-table-body">
+            {% for k in kriteria_list %}
+                {% for s in k.subkriteria.all %}
+                <tr id="row-subkriteria-{{ s.id }}">
+                    {% if forloop.first %}
+                    <td rowspan="{{ k.subkriteria.all|length }}">{{ forloop.parentloop.counter }}</td>
+                    <td rowspan="{{ k.subkriteria.all|length }}">
+                        <div class="kriteria-nama">{{ k.nama }}</div>
+                        <div class="kriteria-kode">{{ k.kode }}</div>
+                    </td>
+                    {% endif %}
+                    <td>{{ s.label }}</td>
+                    <td>{{ s.nilai|floatformat:0 }}</td>
+                    <td>
+                        <a href="{% url 'desa_subkriteria_edit' s.id %}" class="btn-action btn-edit">Edit</a>
+                        <button type="button"
+                                class="btn-action btn-hapus"
+                                onclick="konfirmasiHapus('{{ s.id }}', '{{ s.label|escapejs }}')">
+                            Hapus
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td>{{ forloop.parentloop.counter }}</td>
+                    <td>
+                        <div class="kriteria-nama">{{ k.nama }}</div>
+                        <div class="kriteria-kode">{{ k.kode }}</div>
+                    </td>
+                    <td colspan="3" class="empty-state">Belum ada subkriteria.</td>
+                </tr>
+                {% endfor %}
+            {% empty %}
+            <tr>
+                <td colspan="5" class="empty-state">Belum ada data kriteria.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if kriteria_list and not has_subkriteria %}
+    <div class="empty-state" style="padding: 40px 20px;">
+        Belum ada subkriteria untuk kriteria manapun.
+    </div>
+    {% endif %}
+</div>
+
+{# ===== MODAL KONFIRMASI HAPUS ===== #}
+<div id="modal-hapus" class="modal">
+    <div class="glass-modal">
+        <div class="warning-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
+        <h3>Hapus Subkriteria?</h3>
+        <div class="modal-body">
+            <p>Yakin mau hapus subkriteria <strong id="nama-subkriteria-hapus"></strong>?</p>
+            <span class="sub-text">Tindakan ini tidak bisa dibatalkan.</span>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-secondary" onclick="tutupModalHapus()">Batal</button>
+            <button type="button" class="btn-danger-glass" id="btn-confirm-hapus">Hapus</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let subkriteriaIdDihapus = null;
+
+function konfirmasiHapus(id, label) {
+    subkriteriaIdDihapus = id;
+    document.getElementById('nama-subkriteria-hapus').textContent = label;
+    document.getElementById('modal-hapus').style.display = 'block';
+}
+
+function tutupModalHapus() {
+    document.getElementById('modal-hapus').style.display = 'none';
+    subkriteriaIdDihapus = null;
+}
+
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+document.getElementById('btn-confirm-hapus').addEventListener('click', function () {
+    if (!subkriteriaIdDihapus) return;
+
+    fetch(`/desa/subkriteria/${subkriteriaIdDihapus}/hapus/`, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
+    })
+    .then(res => res.json())
+    .then(data => {
+        tutupModalHapus();
+        if (data.success) {
+            const row = document.getElementById(`row-subkriteria-${subkriteriaIdDihapus}`);
+            if (row) row.remove();
+        } else {
+            alert(data.message || 'Gagal menghapus subkriteria.');
+        }
+    })
+    .catch(() => {
+        tutupModalHapus();
+        alert('Terjadi kesalahan saat menghapus.');
+    });
+});
+
+window.addEventListener('click', function (e) {
+    const modal = document.getElementById('modal-hapus');
+    if (e.target === modal) tutupModalHapus();
+});
+</script>
+{% endblock %}

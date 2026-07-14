@@ -1,4 +1,5 @@
 {% load static %}
+
 <link rel="stylesheet" href="{% static 'css/desa/sidebar.css' %}">
 
 <!-- BURGER -->
@@ -31,16 +32,25 @@
         </a>
 
         <div class="menu-section">DATA</div>
+        <a href="{% url 'desa_kriteria_list' %}" class="menu-item">
+            <i class="fa-solid fa-list-check"></i> Kriteria
+        </a>
+        
+        <a href="{% url 'desa_subkriteria_list' %}" class="menu-item">
+            <i class="fa-solid fa-list-check"></i> Subkriteria
+        </a>
+
         <a href="{% url 'desa_warga_list' %}" class="menu-item">
             <i class="fa-solid fa-users-viewfinder"></i> Data Warga
         </a>
+
         <a href="{% url 'desa_warga_tambah' %}" class="menu-item">
             <i class="fa-solid fa-user-plus"></i> Tambah Warga
         </a>
 
         <div class="menu-section">PERHITUNGAN</div>
-        <a href="{% url 'desa_hasil_saw' %}" class="menu-item">
-            <i class="fa-solid fa-calculator"></i> Hasil SAW
+        <a href="{% url 'desa_riwayat_saw' %}" class="menu-item">
+            <i class="fa-solid fa-calculator"></i> Perhitungan SAW
         </a>
 
         <div class="menu-section">PENGAJUAN</div>
@@ -53,15 +63,15 @@
     </nav>
 
     <div class="sidebar-footer">
-        <a href="{% url 'logout' %}" class="menu-item logout">
+        <button type="button" class="menu-item logout" data-bs-toggle="modal" data-bs-target="#logoutModal">
             <i class="fa-solid fa-right-from-bracket"></i> Logout
-        </a>
+        </button>
     </div>
 </div>
 </div>
 
+<!-- MODAL KONFIRMASI LOGOUT -->
 
-{% block extra_js %}
 
 <script>
 function toggleSidebar() {
@@ -71,7 +81,6 @@ function closeSidebar() {
     document.body.classList.remove('sidebar-open');
 }
 
-/* AUTO CLOSE SAAT SCROLL */
 let lastScroll = 0;
 window.addEventListener('scroll', () => {
     if (Math.abs(window.scrollY - lastScroll) > 10) {
@@ -80,17 +89,9 @@ window.addEventListener('scroll', () => {
     lastScroll = window.scrollY;
 });
 
-/* RESET SAAT DESKTOP */
 window.addEventListener('resize', () => {
     if (window.innerWidth >= 993) {
         closeSidebar();
     }
 });
 </script>
-
-
-
-
-
-{% endblock %}
-
