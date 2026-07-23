@@ -199,3 +199,37 @@
     75% { transform: translateX(-2px); }
     100% { transform: translateX(0); opacity: 1; }
 }
+
+
+
+    .ekbang-toggle-wrap {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        margin-top: 8px !important;
+        position: relative !important;
+    }
+
+    .ekbang-toggle-checkbox {
+        width: 16px !important;
+        height: 16px !important;
+        min-width: 16px !important;
+        flex-shrink: 0 !important;
+        appearance: auto !important;
+        -webkit-appearance: checkbox !important;
+        margin: 0 !important;
+        position: static !important;
+        display: inline-block !important;
+    }
+
+    .ekbang-toggle-label {
+        font-size: 0.8rem !important;
+        color: #adb5bd !important;
+        margin: 0 !important;
+        cursor: pointer !important;
+        position: static !important;
+        opacity: 1 !important;
+        display: inline !important;
+        white-space: normal !important;
+    }
+

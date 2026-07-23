@@ -164,12 +164,14 @@ class WargaForm(forms.ModelForm):
         model = Warga
         fields = [
             'nik',
+            'no_kk',
             'nama',
             'jumlah_keluarga_kpm',
             'alamat',
         ]
         labels = {
             'nik': 'NIK',
+            'no_kk': 'No. KK',
             'nama': 'Nama Lengkap',
             'jumlah_keluarga_kpm': 'Jumlah Anggota Keluarga',
             'alamat': 'Alamat',
@@ -180,6 +182,11 @@ class WargaForm(forms.ModelForm):
                 'unique': 'NIK sudah terdaftar di sistem.',
                 'max_length': 'NIK harus terdiri dari 16 digit.',
                 'min_length': 'NIK harus terdiri dari 16 digit.',
+            },
+            'no_kk': {
+                'required': 'No. KK wajib diisi.',
+                'max_length': 'No. KK harus terdiri dari 16 digit.',
+                'min_length': 'No. KK harus terdiri dari 16 digit.',
             }
         }
         widgets = {

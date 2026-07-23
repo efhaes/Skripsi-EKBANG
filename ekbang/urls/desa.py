@@ -27,7 +27,7 @@ urlpatterns = [
     # SAW
     path('saw/proses/', views.proses_saw_view, name='desa_proses_saw'),
     path('saw/riwayat/', views.riwayat_saw_list, name='desa_riwayat_saw'),  # ← BARU (halaman list)
-    path('saw/hasil/', views.hasil_saw_list, name='desa_hasil_saw'),         # ← halaman detail
+    path('saw/hasil/', views.hasil_saw_list, name='desa_perhitungan_saw'),         # ← halaman detail
     path('saw/hapus/', views.hapus_saw, name='desa_hapus_saw'),
     path('saw/kuota/', views.set_kuota_kpm, name='desa_set_kuota_kpm'),      # ← BARU
     path('saw/export-excel/', views.export_hasil_saw_excel, name='desa_export_saw_excel'),
@@ -37,6 +37,7 @@ urlpatterns = [
     path('pengajuan/list/', views.pengajuan_blt_list, name='desa_pengajuan_list'),
     path('pengajuan/<int:id>/edit/', views.pengajuan_blt_edit, name='desa_pengajuan_edit'),
     path('pengajuan/<int:id>/hapus/', views.pengajuan_blt_hapus, name='desa_pengajuan_blt_hapus'),
+    path('pengajuan/<int:id>/detail/', views.pengajuan_blt_detail, name='desa_pengajuan_detail'),
 ]
 
 if settings.DEBUG:

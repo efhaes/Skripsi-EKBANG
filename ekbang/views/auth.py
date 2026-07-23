@@ -16,23 +16,22 @@ def redirect_by_role(request):
     return redirect('login')
 
 def login_view(request):
-    if request.user.is_authenticated:
-        return redirect_by_role(request)
+    if request.user.is_authenticated: #Node 1
+        return redirect_by_role(request) #Node 2
 
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+    if request.method == 'POST': #Node 3
+        username = request.POST.get('username') #Node 4
+        password = request.POST.get('password') #Node 4
 
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, username=username, password=password) #Node 4
 
-        if user is not None:
-            login(request, user)
-            return redirect_by_role(request)
+        if user is not None: #Node 5
+            login(request, user) #Node 6
+            return redirect_by_role(request) 
         else:
-            messages.error(request, 'Username atau password salah')
+            messages.error(request, 'Username atau password salah') #Node 7
 
-    return render(request, 'auth/login.html')
-
+    return render(request, 'auth/login.html') #Node 8
 
 @login_required
 def logout_view(request):

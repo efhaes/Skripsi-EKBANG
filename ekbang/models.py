@@ -89,7 +89,34 @@ class Warga(models.Model):
     alamat = models.TextField()
     is_deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def _is_nik_placeholder(self):
+        return self.nik and self.nik[6:10] == '9999'
+
+    def _generate_unique_placeholder_nik(self):
+        base = self.nik[:12]
+        existing = Warga.objects.filter(
+            nik__startswith=base
+        ).exclude(pk=self.pk).values_list('nik', flat=True)
+
+        used_suffixes = set()
+        for n in existing:
+            try:
+                used_suffixes.add(int(n[12:16]))
+            except ValueError:
+                continue
+
+        next_suffix = 1
+        while next_suffix in used_suffixes:
+            next_suffix += 1
+            if next_suffix > 9999:
+                raise ValidationError({'nik': 'Kuota NIK placeholder untuk kode wilayah ini sudah penuh.'})
+
+        return base + str(next_suffix).zfill(4)
+
     def clean(self):
+        if self._is_nik_placeholder():
+            return
         try:
             tanggal = int(self.nik[6:8])
             bulan = int(self.nik[8:10])
@@ -102,6 +129,8 @@ class Warga(models.Model):
             raise ValidationError({'nik': 'Format tanggal lahir dalam NIK tidak valid.'})
 
     def save(self, *args, **kwargs):
+        if self._is_nik_placeholder():
+            self.nik = self._generate_unique_placeholder_nik()
         self.full_clean()
         super().save(*args, **kwargs)
 

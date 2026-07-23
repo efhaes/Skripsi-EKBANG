@@ -84,12 +84,10 @@
                 </tr>
             </thead>
             <tbody>
-                {% for h in hasil %}
+                {% for m in matriks_keputusan %}
                 <tr>
-                    <td>
-                        {% if h.normalisasi.warga %}{{ h.normalisasi.warga.nama }}{% else %}{{ h.normalisasi.nama_warga_arsip }}{% endif %}
-                    </td>
-                    {% for nilai in h.nilai_per_kriteria %}
+                    <td>{{ m.warga.nama }}</td>
+                    {% for nilai in m.nilai_per_kriteria %}
                         <td>{{ nilai }}</td>
                     {% endfor %}
                 </tr>

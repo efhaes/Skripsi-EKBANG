@@ -49,6 +49,8 @@
                 </td>
                 <td data-label="Catatan">{{ p.catatan|default:"-" }}</td>
                 <td data-label="Aksi" class="action text-center">
+                    <a href="{% url 'desa_pengajuan_detail' p.id %}" class="btn-icon view" title="Detail">
+                        <i class="fa-solid fa-eye"></i> 
                     <a href="{% url 'desa_pengajuan_edit' p.id %}" class="btn-icon edit" title="Edit">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </a>

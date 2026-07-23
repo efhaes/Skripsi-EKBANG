@@ -1,0 +1,121 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block title %}Detail Pengajuan BLT{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/kecamatan/pengajuan_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO TITLE -->
+<div class="hero-validasi">
+    <div class="hero-validasi-orb"></div>
+    <div class="hero-validasi-content">
+        <div class="hero-validasi-icon">📋</div>
+        <h1 class="hero-validasi-title">Detail Pengajuan BLT Desa {{ pengajuan.desa.nama_desa }}</h1>
+        <p class="hero-validasi-subtitle">
+            Rincian data pengajuan Bantuan Langsung Tunai yang telah diajukan ke Kecamatan.
+        </p>
+    </div>
+</div>
+
+<!-- CARD DETAIL -->
+<div class="card-detail">
+    <div class="card-header-detail">
+        <h5>Informasi Pengajuan</h5>
+    </div>
+    <div class="card-body-detail">
+
+        <table class="table-detail">
+            <tr>
+                <th>No. SK</th>
+                <td>{{ pengajuan.noSK }}</td>
+            </tr>
+            <tr>
+                <th>Tahap</th>
+                <td>{{ pengajuan.tahap }}</td>
+            </tr>
+            <tr>
+                <th>Tahun</th>
+                <td>{{ pengajuan.tahun }}</td>
+            </tr>
+            <tr>
+                <th>Jumlah KPM</th>
+                <td>{{ pengajuan.jumlah_kpm }} orang</td>
+            </tr>
+            <tr>
+                <th>Dana per Bulan</th>
+                <td>Rp {{ pengajuan.perbulan|floatformat:0 }}</td>
+            </tr>
+            <tr>
+                <th>Total Jumlah Dana</th>
+                <td>Rp {{ pengajuan.jumlah_dana|floatformat:0 }}</td>
+            </tr>
+            <tr>
+                <th>Diajukan pada</th>
+                <td>{{ pengajuan.created_at|date:"d M Y, H:i" }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>
+                    <span class="badge-status status-{{ pengajuan.status }}">
+                        {{ pengajuan.get_status_display }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th>Divalidasi oleh</th>
+                <td>
+                    <small>{{ pengajuan.divalidasi_oleh.nama|default:"Belum divalidasi" }}</small>
+                </td>
+            </tr>
+            <tr>
+                <th>Tanggal Validasi</th>
+                <td>
+                    <small>{{ pengajuan.tanggal_validasi|date:"d M Y, H:i"|default:"-" }}</small>
+                </td>
+            </tr>
+        </table>
+
+        <div class="divider"></div>
+
+        <table class="table-detail">
+            <tr>
+                <th>File SK</th>
+                <td>
+                    {% if pengajuan.fileSK %}
+                    <a href="{{ pengajuan.fileSK.url }}" target="_blank" class="btn-download">
+                        Lihat / Unduh File SK
+                    </a>
+                    {% else %}
+                    <small>-</small>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>File Hasil SAW</th>
+                <td>
+                    {% if pengajuan.file_hasil_saw %}
+                    <a href="{{ pengajuan.file_hasil_saw.url }}" target="_blank" class="btn-download">
+                        Lihat / Unduh Hasil SAW
+                    </a>
+                    {% else %}
+                    <small>-</small>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+
+        {% if pengajuan.catatan %}
+        <div class="divider"></div>
+        <div class="alert-status">
+            <b>Catatan Kecamatan</b>
+            <div>{{ pengajuan.catatan|linebreaksbr }}</div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}

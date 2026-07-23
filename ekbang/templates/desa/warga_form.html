@@ -40,10 +40,28 @@
 {% endif %}
 
         <!-- DATA UTAMA -->
-        <div class="row">
+<div class="row">
             <div class="col-md-6 mb-3">
                 <label>NIK</label>
                 {{ form.nik }}
+                <div class="ekbang-toggle-wrap">
+                    <input type="checkbox" id="nik_tidak_diketahui" class="ekbang-toggle-checkbox"
+                        {% if form.instance.pk and form.instance.nik|slice:"6:12" == "999999" %}checked{% endif %}>
+                    <label for="nik_tidak_diketahui" class="ekbang-toggle-label">
+                        NIK tidak diketahui (lansia / tidak ada dokumen)
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>No. Kartu Keluarga</label>
+                {{ form.no_kk }}
+                <div class="ekbang-toggle-wrap">
+                    <input type="checkbox" id="kk_tidak_diketahui" class="ekbang-toggle-checkbox"
+                        {% if form.instance.pk and form.instance.no_kk|slice:"6:12" == "999999" %}checked{% endif %}>
+                    <label for="kk_tidak_diketahui" class="ekbang-toggle-label">
+                        No. KK tidak diketahui
+                    </label>
+                </div>
             </div>
             <div class="col-md-6 mb-3">
                 <label>Nama Lengkap</label>
@@ -106,36 +124,75 @@
 {% endblock %}
 {% block extra_js %}
 <script>
-    // 1. Fungsi Kembali (History Back)
     function goBack() {
         if (document.referrer.indexOf(window.location.host) !== -1) {
-            // Jika ada history sebelumnya, balik ke sana
             window.history.back();
         } else {
-            // Jika buka langsung/tab baru, arahkan ke daftar warga (fallback)
             window.location.href = "{% url 'desa_warga_list' %}";
         }
     }
 
-    // 2. Efek Loading saat Klik Simpan
     const form = document.querySelector('form');
     const btnSimpan = document.getElementById('btnSimpan');
     const btnText = btnSimpan.querySelector('span');
 
     form.onsubmit = function() {
-        // Cek validitas form standar HTML5
         if (form.checkValidity()) {
-            // Ganti teks & icon jadi loading
             btnSimpan.disabled = true;
             btnSimpan.style.opacity = '0.7';
             btnSimpan.style.cursor = 'not-allowed';
             btnText.innerText = "Sedang Menyimpan...";
-            
-            // Tambahkan icon spinner jika lo mau (opsional)
             btnSimpan.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
-            
             return true;
         }
     };
+
+    // Kode wilayah desa terkait warga ini
+    const KODE_WILAYAH = "{{ warga.desa.kode_wilayah|default:'320118' }}";
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const nikCheckbox = document.getElementById('nik_tidak_diketahui');
+        const nikInput = document.getElementById('id_nik');
+        const kkCheckbox = document.getElementById('kk_tidak_diketahui');
+        const kkInput = document.getElementById('id_no_kk');
+
+        function applyNikState(checked) {
+            if (checked) {
+                nikInput.value = KODE_WILAYAH + '999999' + '0000';
+                nikInput.readOnly = true;
+                nikInput.style.opacity = '0.6';
+            } else {
+                nikInput.readOnly = false;
+                nikInput.style.opacity = '1';
+            }
+        }
+
+        function applyKkState(checked) {
+            if (checked) {
+                kkInput.value = KODE_WILAYAH + '999999' + '0000';
+                kkInput.readOnly = true;
+                kkInput.style.opacity = '0.6';
+            } else {
+                kkInput.readOnly = false;
+                kkInput.style.opacity = '1';
+            }
+        }
+
+        if (nikCheckbox.checked) {
+            nikInput.readOnly = true;
+            nikInput.style.opacity = '0.6';
+        }
+        if (kkCheckbox.checked) {
+            kkInput.readOnly = true;
+            kkInput.style.opacity = '0.6';
+        }
+
+        nikCheckbox.addEventListener('change', function () {
+            applyNikState(this.checked);
+        });
+        kkCheckbox.addEventListener('change', function () {
+            applyKkState(this.checked);
+        });
+    });
 </script>
 {% endblock %}

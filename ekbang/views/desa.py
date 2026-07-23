@@ -521,42 +521,38 @@ def subkriteria_hapus(request, id):
 @role_required('desa')
 def proses_saw_view(request):
     desa = request.user.desa
-
     if request.method != 'POST':
-        return redirect('desa_riwayat_saw')
-
-    jumlah_kpm = request.POST.get('jumlah_kpm', '').strip()
+        return redirect('desa_proses_saw')
+    jumlah_kpm = request.POST.get('jumlah_kpm', '').strip() 
     tahap = request.POST.get('tahap', '').strip()
     tahun = _parse_tahun(request.POST.get('tahun', ''))
-
     if not tahap or tahun is None:
         messages.warning(request, 'Tahap dan tahun wajib diisi dengan benar')
-        return redirect('desa_riwayat_saw')
-
+        return redirect('desa_perhitungan_saw')
     if not Warga.objects.filter(desa=desa, is_deleted=False).exists():
         messages.warning(request, 'Data warga masih kosong')
-        return redirect('desa_riwayat_saw')
-
+        return redirect('desa_perhitungan_saw')
     if not Kriteria.objects.filter(desa=desa, aktif=True).exists():
         messages.warning(request, 'Belum ada kriteria yang diatur untuk desa ini')
-        return redirect('desa_riwayat_saw')
-
-    # guard sudah_ada DIHAPUS — hitung_saw() sendiri sudah soft-delete data lama
-    if jumlah_kpm:
-        try:
-            jumlah_kpm = int(jumlah_kpm)
-            KuotaKPM.objects.update_or_create(
-                desa=desa, tahap=tahap, tahun=tahun,
-                defaults={'jumlah': jumlah_kpm}
-            )
-        except ValueError:
-            messages.warning(request, 'Jumlah KPM tidak valid')
-            return redirect('desa_riwayat_saw')
-
+        return redirect('desa_perhitungan_saw')
+    if not jumlah_kpm:
+        messages.warning(request, 'Jumlah KPM wajib diisi')
+        return redirect('desa_perhitungan_saw')
+    try:
+        jumlah_kpm = int(jumlah_kpm)
+        KuotaKPM.objects.update_or_create(desa=desa, tahap=tahap, tahun=tahun, defaults={'jumlah': jumlah_kpm})
+    except ValueError:
+        messages.warning(request, 'Jumlah KPM tidak valid') 
+        return redirect('desa_perhitungan_saw')
     hitung_saw(desa=desa, tahap=tahap, tahun=tahun)
 
-    messages.success(request, f'Proses SAW Tahap {tahap} Tahun {tahun} berhasil dijalankan.')
-    return redirect(f"{reverse('desa_hasil_saw')}?tahap={tahap}&tahun={tahun}")
+    messages.success(
+        request,
+        f'Proses SAW Tahap {tahap} Tahun {tahun} berhasil dijalankan.'
+    )
+    return redirect(
+        f"{reverse('desa_perhitungan_saw')}?tahap={tahap}&tahun={tahun}"
+    )
 
 
 @login_required
@@ -619,8 +615,10 @@ def hasil_saw_list(request):
     kriteria_list = Kriteria.objects.filter(desa=desa, aktif=True).order_by('id')
     kuota_obj = None
     sudah_diproses = False
+    matriks_keputusan = []
 
     if tahap and tahun is not None:
+        # Tabel HASIL / RANKING — tetap urut berdasarkan ranking (dari yang terbaik)
         hasil = (
             HasilSAW.objects
             .filter(
@@ -636,15 +634,31 @@ def hasil_saw_list(request):
             .order_by('ranking')
         )
 
-        normalisasi = NormalisasiSAW.objects.filter(
-            desa=desa, tahap=tahap, tahun=tahun, is_active=True
-        ).select_related('warga').prefetch_related('detail__kriteria').order_by('warga__nama')
+        # Tabel NORMALISASI — urut berdasarkan urutan data warga (id), bukan nama/ranking
+        normalisasi = (
+            NormalisasiSAW.objects
+            .filter(desa=desa, tahap=tahap, tahun=tahun, is_active=True)
+            .select_related('warga')
+            .prefetch_related('detail__kriteria')
+            .order_by('warga__id')
+        )
 
-        # Data mentah untuk Matriks Keputusan (tabel 1️⃣)
-        warga_ids = [
-            h.normalisasi.warga_id
-            for h in hasil
-        ]
+        # Tabel MATRIKS KEPUTUSAN — juga urut berdasarkan urutan data warga (id)
+        warga_list_urut = (
+            Warga.objects
+            .filter(
+                desa=desa,
+                is_deleted=False,
+                normalisasisaw__tahap=tahap,
+                normalisasisaw__tahun=tahun,
+                normalisasisaw__is_active=True,
+            )
+            .order_by('id')
+            .distinct()
+        )
+
+        warga_ids = [w.id for w in warga_list_urut]
+
         penilaian_qs = penilaianwarga.objects.filter(
             warga_id__in=warga_ids, kriteria_id__in=[k.id for k in kriteria_list]
         ).select_related('subkriteria', 'kriteria')
@@ -653,12 +667,15 @@ def hasil_saw_list(request):
         for p in penilaian_qs:
             nilai_mentah_map.setdefault(p.warga_id, {})[p.kriteria_id] = p.subkriteria.nilai
 
-        # tempel ke masing-masing objek hasil biar gampang diakses di template
-        for h in hasil:
-            h.nilai_per_kriteria = [
-                nilai_mentah_map.get(h.normalisasi.warga_id, {}).get(k.id, '—')
-                for k in kriteria_list
-            ]
+        # Bangun matriks keputusan sesuai urutan warga (id), TERPISAH dari objek hasil
+        for w in warga_list_urut:
+            matriks_keputusan.append({
+                'warga': w,
+                'nilai_per_kriteria': [
+                    nilai_mentah_map.get(w.id, {}).get(k.id, '—')
+                    for k in kriteria_list
+                ],
+            })
 
         kuota_obj = KuotaKPM.objects.filter(desa=desa, tahap=tahap, tahun=tahun).first()
         sudah_diproses = hasil.exists()
@@ -666,6 +683,7 @@ def hasil_saw_list(request):
     return render(request, 'desa/hasil_saw.html', {
         'hasil': hasil,
         'normalisasi': normalisasi,
+        'matriks_keputusan': matriks_keputusan,
         'kriteria_list': kriteria_list,
         'sudah_diproses': sudah_diproses,
         'kuota': kuota_obj.jumlah if kuota_obj else '',
@@ -695,7 +713,7 @@ def set_kuota_kpm(request):
         else:
             messages.warning(request, 'Data kuota tidak valid')
 
-    return redirect(f"{reverse('desa_hasil_saw')}?tahap={tahap}&tahun={tahun}")
+    return redirect(f"{reverse('desa_perhitungan_saw')}?tahap={tahap}&tahun={tahun}")
 
 
 
@@ -793,6 +811,13 @@ def pengajuan_blt_edit(request, id):
 
     return render(request, 'desa/pengajuan_form.html', {'form': form})
 
+@login_required
+@role_required('desa')
+def pengajuan_blt_detail(request, id):
+    desa = request.user.desa
+    pengajuan = get_object_or_404(PengajuanBLT, id=id, desa=desa)
+    return render(request, 'desa/pengajuan_detail.html', {'pengajuan': pengajuan})
+
 
 
 @login_required
@@ -805,7 +830,7 @@ def export_hasil_saw_excel(request):
 
     if not tahap or tahun is None:
         messages.warning(request, 'Tahap dan tahun wajib dipilih sebelum export')
-        return redirect('desa_hasil_saw')
+        return redirect('desa_perhitungan_saw')
 
     # =========================
     # HASIL SAW
@@ -833,7 +858,7 @@ def export_hasil_saw_excel(request):
             request,
             f'Belum ada hasil SAW Tahap {tahap} Tahun {tahun}'
         )
-        return redirect('desa_hasil_saw')
+        return redirect('desa_perhitungan_saw')
 
     # =========================
     # NORMALISASI

@@ -346,7 +346,7 @@
     <div>
         <h3>📊 Data Perhitungan SAW</h3>
         <p>Daftar semua periode perhitungan SAW yang pernah dijalankan.</p>
-        <a href="{% url 'desa_hasil_saw' %}" class="btn-glass">
+        <a href="{% url 'desa_perhitungan_saw' %}" class="btn-glass">
             <i class="bi bi-plus-lg"></i> Proses SAW Baru
         </a>
     </div>
@@ -389,7 +389,7 @@
                 </td>
                 <td>
                     <div style="display:flex; gap:6px; align-items:center;">
-                        <a href="{% url 'desa_hasil_saw' %}?tahap={{ p.tahap }}&tahun={{ p.tahun }}"
+                        <a href="{% url 'desa_perhitungan_saw' %}?tahap={{ p.tahap }}&tahun={{ p.tahun }}"
                            class="btn-detail">
                             🔍 Detail
                         </a>
@@ -439,7 +439,7 @@
                     onclick="openHapusModal('{{ p.tahap }}', '{{ p.tahun }}')">
                 🗑️ Hapus
             </button>
-            <a href="{% url 'desa_hasil_saw' %}?tahap={{ p.tahap }}&tahun={{ p.tahun }}"
+            <a href="{% url 'desa_perhitungan_saw' %}?tahap={{ p.tahap }}&tahun={{ p.tahun }}"
                class="btn-detail">
                 🔍 Lihat Detail
             </a>
