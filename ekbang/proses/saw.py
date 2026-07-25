@@ -24,7 +24,7 @@ def hitung_saw(desa, tahap, tahun):
         Warga.objects.filter(
             desa=desa,
             is_deleted=False
-        )
+        ).order_by('id') 
     )
 
     if not warga_list:
@@ -137,8 +137,7 @@ def hitung_saw(desa, tahap, tahun):
         })
 
     hasil.sort(
-        key=lambda x: x["nilai"],
-        reverse=True
+        key=lambda x: (-x["nilai"], x["normalisasi"].warga_id),  # ← secondary key by warga_id ascending
     )
 
     for ranking, h in enumerate(hasil, start=1):
